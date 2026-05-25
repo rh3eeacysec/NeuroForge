@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NeuroForge</title>
+    <style>
+      body {
+        background-color: #0a0a0a;
+        color: #00ff9f;
+        font-family: monospace;
+        padding: 40px;
+      }
+
+      h1 {
+        font-size: 52px;
+        letter-spacing: 10px;
+        animation: glow 1.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes glow {
+        from { text-shadow: 0 0 10px #00ff9f; }
+        to { text-shadow: 0 0 30px #00ff9f, 0 0 60px #00ff9f; }
+      }
+
+      #start-screen {
+        text-align: center;
+        margin-top: 15vh;
+      }
+
+      input {
+        background: none;
+        border: none;
+        border-bottom: 1px solid #00ff9f;
+        color: #00ff9f;
+        font-family: monospace;
+        font-size: 20px;
+        text-align: center;
+        outline: none;
+        margin-top: 20px;
+        padding: 8px;
+        width: 250px;
+      }
+
+      button {
+        background: none;
+        border: 1px solid #00ff9f;
+        color: #00ff9f;
+        padding: 10px 20px;
+        margin-top: 15px;
+        font-family: monospace;
+        cursor: pointer;
+        font-size: 14px;
+        display: block;
+        width: 100%;
+        text-align: left;
+      }
+
+      button:hover {
+        background-color: #00ff9f;
+        color: black;
+      }
+
+      #start-screen button {
+        margin: 20px auto;
+        width: 200px;
+        letter-spacing: 4px;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .xp {
+        margin-top: 20px;
+        font-size: 14px;
+        letter-spacing: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="start-screen">
+      <h1>NEUROFORGE</h1>
+      <p>Enter your name, Recruit.</p>
+      <input type="text" id="player-name" placeholder="your name..." />
+      <button onclick="enterGame()">ENTER</button>
+    </div>
+
+    <div id="game-screen" class="hidden">
+      <h1>NEUROFORGE</h1>
+      <p id="welcome-msg"></p>
+      <div class="xp">XP: <span id="xp">0</span></div>
+    </div>
+
+    <script>
+      let xp = 0;
+
+      function enterGame() {
+        let name = document.getElementById("player-name").value;
+        if (name === "") return;
+        document.getElementById("start-screen").classList.add("hidden");
+        document.getElementById("game-screen").classList.remove("hidden");
+        document.getElementById("welcome-msg").textContent = "Are you ready, " + name + "? Your mission awaits.";
+      }
+    </script>
+  </body>
+</html>
