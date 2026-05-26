@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NeuroForge — Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050510; color: #fff; font-family: monospace; }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
+      border-bottom: 1px solid rgba(168,85,247,0.3);
+    }
+    .logo { color: #a855f7; font-size: 18px; letter-spacing: 4px; }
+    .nav-links { display: flex; gap: 30px; font-size: 13px; color: rgba(168,85,247,0.6); }
+    .nav-links a { color: rgba(168,85,247,0.6); text-decoration: none; letter-spacing: 2px; }
+    .nav-links a:hover { color: #a855f7; }
+    .play-btn {
+      background: #a855f7;
+      color: #050510;
+      border: none;
+      padding: 10px 24px;
+      font-family: monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 60px 40px;
+      border-bottom: 1px solid rgba(168,85,247,0.2);
+    }
+    .hero-text h1 {
+      font-size: 48px;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: 2px;
+    }
+    .hero-text h1 span { color: #a855f7; }
+    .hero-text p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin: 16px 0 24px;
+      line-height: 1.8;
+      max-width: 400px;
+    }
+    .hero-btns { display: flex; gap: 12px; }
+    .btn-primary {
+      background: #a855f7;
+      color: #050510;
+      border: none;
+      padding: 12px 24px;
+      font-family: monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: none;
+      color: #a855f7;
+      border: 1px solid #a855f7;
+      padding: 12px 24px;
+      font-family: monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+    .hero-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: right;
+    }
+    .stat-num { font-size: 28px; font-weight: bold; color: #a855f7; }
+    .stat-lbl { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; }
+
+    .worlds { padding: 40px; }
+    .worlds h2 { letter-spacing: 4px; color: #a855f7; margin-bottom: 8px; }
+    .worlds p { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
+    .world-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .world-card {
+      border: 1px solid rgba(168,85,247,0.3);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .world-card:hover { border-color: #a855f7; background: rgba(168,85,247,0.05); }
+    .world-icon { font-size: 20px; margin-bottom: 10px; }
+    .world-name { font-size: 14px; letter-spacing: 2px; color: #a855f7; margin-bottom: 6px; }
+    .world-desc { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">NEUROFORGE</div>
+    <div class="nav-links">
+      <a href="#">Worlds</a>
+      <a href="#">Missions</a>
+      <a href="#">Leaderboard</a>
+    </div>
+    <button class="play-btn" onclick="window.location.href='index.html'">PLAY NOW →</button>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-text">
+      <h1>Forge Your Mind.<br><span>Defend</span><br>The Future.</h1>
+      <p>NeuroForge is an interactive cybersecurity simulation. Make decisions. Face threats. Evolve.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="window.location.href='index.html'">Enter Simulation →</button>
+        <button class="btn-secondary">Explore Worlds</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">25+</div><div class="stat-lbl">Worlds</div></div>
+      <div><div class="stat-num">250+</div><div class="stat-lbl">Missions</div></div>
+      <div><div class="stat-num">50K+</div><div class="stat-lbl">Agents Trained</div></div>
+    </div>
+  </div>
+
+  <div class="worlds">
+    <h2>EXPLORE WORLDS</h2>
+    <p>Each world is a simulation. Each decision shapes your path.</p>
+    <div class="world-grid">
+      <div class="world-card">
+        <div class="world-icon">🛡</div>
+        <div class="world-name">Security World</div>
+        <div class="world-desc">Defend systems. Stop breaches. Protect what matters.</div>
+      </div>
+      <div class="world-card">
+        <div class="world-icon">☁️</div>
+        <div class="world-name">Cloud World</div>
+        <div class="world-desc">Navigate cloud infra. Secure what floats.</div>
+      </div>
+      <div class="world-card">
+        <div class="world-icon">⚡</div>
+        <div class="world-name">Logic World</div>
+        <div class="world-desc">Solve. Analyze. Think like an analyst.</div>
+      </div>
+      <div class="world-card">
+        <div class="world-icon">🔥</div>
+        <div class="world-name">Incident Response</div>
+        <div class="world-desc">When attacks happen, your response defines all.</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
