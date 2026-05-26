@@ -1,107 +1,120 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>NeuroForge</title>
-    <style>
-      body {
-        background-color: #0a0a0a;
-        color: #00ff9f;
-        font-family: monospace;
-        padding: 40px;
-      }
+<head>
+  <title>NeuroForge</title>
+  <style>
+    body {
+      background: #050510;
+      color: #fff;
+      font-family: monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .hidden { display: none; }
+    input {
+      background: none;
+      border-bottom: 1px solid #a855f7;
+      color: #a855f7;
+      font-family: monospace;
+      font-size: 18px;
+      text-align: center;
+      outline: none;
+      padding: 8px;
+      width: 250px;
+      display: block;
+      margin: 20px auto;
+    }
+    button {
+      background: none;
+      border: 1px solid #a855f7;
+      color: #a855f7;
+      font-family: monospace;
+      font-size: 14px;
+      letter-spacing: 4px;
+      padding: 12px 30px;
+      cursor: pointer;
+      display: block;
+      margin: 10px auto;
+    }
+    button:hover { background: #a855f7; color: #050510; }
+    h1 { text-align: center; letter-spacing: 8px; color: #a855f7; }
+    p { text-align: center; color: rgba(168,85,247,0.6); letter-spacing: 2px; font-size: 13px; }
+    .mission-card {
+      border: 1px solid #a855f7;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .choice {
+      background: none;
+      border: 1px solid rgba(168,85,247,0.4);
+      color: #a855f7;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 12px 16px;
+      cursor: pointer;
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 8px 0;
+      letter-spacing: 1px;
+    }
+    .choice:hover { background: rgba(168,85,247,0.1); }
+    #result { margin-top: 20px; font-size: 14px; line-height: 1.8; }
+  </style>
+</head>
+<body>
 
-      h1 {
-        font-size: 52px;
-        letter-spacing: 10px;
-        animation: glow 1.5s ease-in-out infinite alternate;
-      }
+  <div id="start">
+    <h1>NEUROFORGE</h1>
+    <p>cyber simulation — recruit training</p>
+    <input type="text" id="name" placeholder="enter your name..." />
+    <button onclick="start()">ENTER</button>
+  </div>
 
-      @keyframes glow {
-        from { text-shadow: 0 0 10px #00ff9f; }
-        to { text-shadow: 0 0 30px #00ff9f, 0 0 60px #00ff9f; }
-      }
-
-      #start-screen {
-        text-align: center;
-        margin-top: 15vh;
-      }
-
-      input {
-        background: none;
-        border: none;
-        border-bottom: 1px solid #00ff9f;
-        color: #00ff9f;
-        font-family: monospace;
-        font-size: 20px;
-        text-align: center;
-        outline: none;
-        margin-top: 20px;
-        padding: 8px;
-        width: 250px;
-      }
-
-      button {
-        background: none;
-        border: 1px solid #00ff9f;
-        color: #00ff9f;
-        padding: 10px 20px;
-        margin-top: 15px;
-        font-family: monospace;
-        cursor: pointer;
-        font-size: 14px;
-        display: block;
-        width: 100%;
-        text-align: left;
-      }
-
-      button:hover {
-        background-color: #00ff9f;
-        color: black;
-      }
-
-      #start-screen button {
-        margin: 20px auto;
-        width: 200px;
-        letter-spacing: 4px;
-        font-size: 16px;
-        text-align: center;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      .xp {
-        margin-top: 20px;
-        font-size: 14px;
-        letter-spacing: 2px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="start-screen">
-      <h1>NEUROFORGE</h1>
-      <p>Enter your name, Recruit.</p>
-      <input type="text" id="player-name" placeholder="your name..." />
-      <button onclick="enterGame()">ENTER</button>
+  <div id="game" class="hidden">
+    <div class="mission-card">
+      <p id="welcome" style="color:#a855f7; margin-bottom:20px;"></p>
+      <p style="color:rgba(168,85,247,0.5); font-size:11px; letter-spacing:3px;">MISSION 01</p>
+      <h2 style="letter-spacing:3px; margin: 10px 0;">PHISHING EMAIL</h2>
+      <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.8; text-align:left;">
+        An email from support@paypa1.com says your account will be suspended. There's a link to click urgently. What do you do?
+      </p>
+      <div id="choices">
+        <button class="choice" onclick="answer(false, 'Wrong! Never click suspicious links. paypa1 is not paypal!')">Click the link to verify</button>
+        <button class="choice" onclick="answer(false, 'Close! But you should report it to IT too.')">Ignore it</button>
+        <button class="choice" onclick="answer(true, 'Correct! You spotted the fake domain!')">Report to IT and delete it</button>
+      </div>
+      <div id="result"></div>
     </div>
+  </div>
 
-    <div id="game-screen" class="hidden">
-      <h1>NEUROFORGE</h1>
-      <p id="welcome-msg"></p>
-      <div class="xp">XP: <span id="xp">0</span></div>
-    </div>
+  <script>
+    function start() {
+      var name = document.getElementById("name").value;
+      if (name === "") return;
+      document.getElementById("start").className = "hidden";
+      document.getElementById("game").className = "";
+      document.getElementById("welcome").textContent = "Ready, " + name + "? Your mission awaits.";
+    }
 
-    <script>
-      let xp = 0;
-
-      function enterGame() {
-        let name = document.getElementById("player-name").value;
-        if (name === "") return;
-        document.getElementById("start-screen").classList.add("hidden");
-        document.getElementById("game-screen").classList.remove("hidden");
-        document.getElementById("welcome-msg").textContent = "Are you ready, " + name + "? Your mission awaits.";
+    function answer(correct, feedback) {
+      document.getElementById("choices").style.display = "none";
+      var result = document.getElementById("result");
+      if (correct) {
+        result.style.color = "#a855f7";
+        result.textContent = "✓ " + feedback + " | +100 XP";
+      } else {
+        result.style.color = "#ff4444";
+        result.textContent = "✗ " + feedback;
       }
-    </script>
+    }
+  </script>
+
+</body>
+</html>
   </body>
 </html>
