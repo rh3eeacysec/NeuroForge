@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NeuroForge — Worlds</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050510; color: #fff; font-family: monospace; }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
+      border-bottom: 1px solid rgba(168,85,247,0.3);
+      position: relative;
+      z-index: 1;
+    }
+    .logo { color: #a855f7; font-size: 18px; letter-spacing: 4px; cursor: pointer; }
+    .nav-links { display: flex; gap: 30px; font-size: 13px; }
+    .nav-links a { color: rgba(168,85,247,0.6); text-decoration: none; letter-spacing: 2px; }
+    .nav-links a:hover { color: #a855f7; }
+
+    .page { padding: 40px; position: relative; z-index: 1; }
+
+    .page-title {
+      font-size: 32px;
+      letter-spacing: 6px;
+      color: #a855f7;
+      margin-bottom: 8px;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #a855f7; }
+      to { text-shadow: 0 0 30px #a855f7, 0 0 60px #a855f7; }
+    }
+
+    .page-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+
+    .worlds-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .world-card {
+      border: 1px solid rgba(168,85,247,0.3);
+      padding: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .world-card:hover {
+      border-color: #a855f7;
+      background: rgba(168,85,247,0.05);
+      transform: translateY(-4px);
+    }
+
+    .world-icon { font-size: 40px; margin-bottom: 16px; }
+    .world-name { font-size: 20px; letter-spacing: 4px; color: #a855f7; margin-bottom: 8px; }
+    .world-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.8; margin-bottom: 20px; }
+
+    .world-progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .progress-label { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; }
+    .progress-count { font-size: 11px; color: #a855f7; }
+
+    .progress-bar {
+      height: 3px;
+      background: rgba(168,85,247,0.2);
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #a855f7;
+      border-radius: 99px;
+    }
+
+    .difficulty {
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 1px solid rgba(168,85,247,0.4);
+      color: rgba(168,85,247,0.8);
+      letter-spacing: 2px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="worlds-bg.png" style="position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.15; z-index:0;" />
+
+  <nav>
+    <div class="logo" onclick="window.location.href='dashboard.html'">NEUROFORGE</div>
+    <div class="nav-links">
+      <a href="worlds.html">Worlds</a>
+      <a href="#">Missions</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-title">WORLDS</div>
+    <div class="page-sub">Choose your simulation. Each world gets harder as you progress.</div>
+
+    <div class="worlds-grid">
+
+      <div class="world-card" onclick="window.location.href='security.html'">
+        <div class="world-icon">🔐</div>
+        <div class="world-name">SECURITY WORLD</div>
+        <div class="world-desc">Defend systems. Stop breaches. Protect what matters. Face real threats from phishing to full scale attacks.</div>
+        <div class="world-progress">
+          <span class="progress-label">PROGRESS</span>
+          <span class="progress-count">0/50</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <span class="difficulty">BEGINNER FRIENDLY</span>
+      </div>
+
+      <div class="world-card" onclick="window.location.href='cloud.html'">
+        <div class="world-icon">☁️</div>
+        <div class="world-name">CLOUD WORLD</div>
+        <div class="world-desc">Navigate cloud infrastructure. Secure what floats. Handle misconfigurations and cloud breaches.</div>
+        <div class="world-progress">
+          <span class="progress-label">PROGRESS</span>
+          <span class="progress-count">0/50</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <span class="difficulty">INTERMEDIATE</span>
+      </div>
+
+      <div class="world-card" onclick="window.location.href='logic.html'">
+        <div class="world-icon">⚡</div>
+        <div class="world-name">LOGIC WORLD</div>
+        <div class="world-desc">Solve. Analyze. Think like an analyst. Crack puzzles and outsmart adversaries with pure logic.</div>
+        <div class="world-progress">
+          <span class="progress-label">PROGRESS</span>
+          <span class="progress-count">0/50</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <span class="difficulty">ADVANCED</span>
+      </div>
+
+      <div class="world-card" onclick="window.location.href='incident.html'">
+        <div class="world-icon">🔥</div>
+        <div class="world-name">INCIDENT RESPONSE</div>
+        <div class="world-desc">When attacks happen your response defines all. Race against time to contain and neutralize threats.</div>
+        <div class="world-progress">
+          <span class="progress-label">PROGRESS</span>
+          <span class="progress-count">0/50</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <span class="difficulty">EXPERT</span>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    var player = localStorage.getItem("player");
+    if (player) {
+      document.querySelector('.logo').textContent = "NEUROFORGE — " + player.toUpperCase();
+    }
+  </script>
+
+</body>
+</html>
