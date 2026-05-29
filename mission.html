@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NeuroForge — Mission</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050510; color: #fff; font-family: monospace; min-height: 100vh; }
+
+    nav {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
+      border-bottom: 1px solid rgba(168,85,247,0.3);
+    }
+    .logo { color: #a855f7; font-size: 18px; letter-spacing: 4px; cursor: pointer; }
+    .nav-links { display: flex; gap: 30px; font-size: 13px; }
+    .nav-links a { color: rgba(168,85,247,0.6); text-decoration: none; letter-spacing: 2px; }
+    .nav-links a:hover { color: #a855f7; }
+
+    .page {
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .mission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .mission-tag {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: rgba(168,85,247,0.6);
+    }
+
+    .difficulty-tag {
+      font-size: 11px;
+      padding: 4px 12px;
+      border: 1px solid rgba(168,85,247,0.4);
+      color: #a855f7;
+      letter-spacing: 2px;
+    }
+
+    .mission-title {
+      font-size: 28px;
+      letter-spacing: 4px;
+      color: #a855f7;
+      margin-bottom: 24px;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #a855f7; }
+      to { text-shadow: 0 0 30px #a855f7, 0 0 60px #a855f7; }
+    }
+
+    .scenario-box {
+      border: 1px solid rgba(168,85,247,0.3);
+      padding: 24px;
+      margin-bottom: 24px;
+      background: rgba(168,85,247,0.03);
+      line-height: 1.8;
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      min-height: 120px;
+    }
+
+    .loading {
+      color: rgba(168,85,247,0.6);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .choice-btn {
+      background: rgba(168,85,247,0.05);
+      border: 1px solid rgba(168,85,247,0.4);
+      color: #fff;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 16px 20px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      line-height: 1.6;
+    }
+
+    .choice-btn:hover { background: rgba(168,85,247,0.15); border-color: #a855f7; }
+    .choice-btn.correct { background: rgba(0,255,100,0.1); border-color: #00ff64; color: #00ff64; }
+    .choice-btn.wrong { background: rgba(255,50,50,0.1); border-color: #ff3232; color: #ff3232; }
+    .choice-btn:disabled { cursor: not-allowed; }
+
+    .result-box {
+      padding: 20px;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.8;
+      display: none;
+      margin-bottom: 24px;
+    }
+
+    .result-box.correct { background: rgba(0,255,100,0.08); border: 1px solid #00ff64; color: #00ff64; }
+    .result-box.wrong { background: rgba(255,50,50,0.08); border: 1px solid #ff3232; color: #ff3232; }
+
+    .xp-badge {
+      display: inline-block;
+      background: #a855f7;
+      color: #050510;
+      font-size: 12px;
+      padding: 4px 12px;
+      letter-spacing: 2px;
+      margin-top: 8px;
+    }
+
+    .next-btn {
+      background: #a855f7;
+      color: #050510;
+      border: none;
+      font-family: monospace;
+      font-size: 14px;
+      letter-spacing: 4px;
+      padding: 14px 40px;
+      cursor: pointer;
+      display: none;
+      transition: all 0.2s;
+    }
+
+    .next-btn:hover { background: #9333ea; }
+
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+      padding: 16px;
+      border: 1px solid rgba(168,85,247,0.2);
+      background: rgba(168,85,247,0.03);
+    }
+
+    .stat { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 2px; }
+    .stat span { color: #a855f7; font-size: 16px; font-weight: bold; margin-left: 8px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo" onclick="window.location.href='dashboard.html'">NEUROFORGE</div>
+    <div class="nav-links">
+      <a href="worlds.html">Worlds</a>
+      <a href="#">Missions</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <div class="stats-bar">
+      <div class="stat">PLAYER <span id="stat-player">—</span></div>
+      <div class="stat">WORLD <span id="stat-world">—</span></div>
+      <div class="stat">LEVEL <span id="stat-level">—</span></div>
+      <div class="stat">XP <span id="stat-xp">0</span></div>
+    </div>
+
+    <div class="mission-header">
+      <div class="mission-tag" id="mission-tag">MISSION</div>
+      <div class="difficulty-tag" id="diff-tag">EASY</div>
+    </div>
+
+    <div class="mission-title" id="mission-title">LOADING MISSION...</div>
+
+    <div class="scenario-box" id="scenario-box">
+      <span class="loading">Generating mission scenario...</span>
+    </div>
+
+    <div class="choices" id="choices"></div>
+    <div class="result-box" id="result-box"></div>
+    <button class="next-btn" id="next-btn" onclick="nextMission()">NEXT MISSION →</button>
+
+  </div>
+
+  <script>
+    var player = localStorage.getItem("player") || "Agent";
+    var playerID = localStorage.getItem("playerID") || "";
+    var world = localStorage.getItem("currentWorld") || "security";
+    var level = parseInt(localStorage.getItem("currentLevel")) || 1;
+    var xp = parseInt(localStorage.getItem("xp")) || 0;
+
+    document.querySelector('.logo').textContent = "NEUROFORGE — " + player.toUpperCase();
+    document.getElementById("stat-player").textContent = player;
+    document.getElementById("stat-world").textContent = world.toUpperCase();
+    document.getElementById("stat-level").textContent = level;
+    document.getElementById("stat-xp").textContent = xp;
+
+    var difficulty = level <= 10 ? "EASY" : level <= 25 ? "MEDIUM" : level <= 40 ? "HARD" : "EXTREME";
+    var xpReward = level <= 10 ? 100 : level <= 25 ? 200 : level <= 40 ? 350 : 500;
+
+    document.getElementById("diff-tag").textContent = difficulty;
+    document.getElementById("mission-tag").textContent = world.toUpperCase() + " — LEVEL " + level;
+
+    var worldTitles = {
+      security: "SECURITY BREACH",
+      cloud: "CLOUD THREAT",
+      logic: "LOGIC PUZZLE",
+      incident: "INCIDENT ALERT"
+    };
+    document.getElementById("mission-title").textContent = worldTitles[world] || "MISSION";
+
+    var missions = {
+      security: [
+        {
+          scenario: "You receive an urgent email from 'support@paypa1.com' saying your account will be suspended unless you click a link immediately.",
+          choices: [
+            { text: "Click the link to verify your account", correct: false, feedback: "Wrong! The domain 'paypa1' is not 'paypal'. This is a phishing attack." },
+            { text: "Ignore it and delete", correct: false, feedback: "Better but you should report it to IT security too!" },
+            { text: "Report to IT security and delete", correct: true, feedback: "Correct! Always report phishing attempts to your security team." },
+            { text: "Forward it to colleagues to warn them", correct: false, feedback: "Never forward suspicious emails — you could spread malware!" }
+          ]
+        },
+        {
+          scenario: "A colleague calls asking for your password to finish an urgent project while you're out sick.",
+          choices: [
+            { text: "Give them the password since it's urgent", correct: false, feedback: "Never share passwords — even with colleagues you trust!" },
+            { text: "Refuse and suggest they contact IT for access", correct: true, feedback: "Correct! Legitimate requests go through IT, not direct password sharing." },
+            { text: "Give a temporary password you'll change later", correct: false, feedback: "Still wrong — any password sharing is a security violation." },
+            { text: "Ignore the call", correct: false, feedback: "You should respond and direct them to proper channels." }
+          ]
+        },
+        {
+          scenario: "You notice your computer is running very slowly and your files are being renamed with strange extensions like .locked.",
+          choices: [
+            { text: "Restart the computer to fix it", correct: false, feedback: "Restarting won't help — this looks like ransomware!" },
+            { text: "Immediately disconnect from the network and call IT", correct: true, feedback: "Correct! Disconnecting stops ransomware from spreading to other machines." },
+            { text: "Try to delete the suspicious files", correct: false, feedback: "Too late for that — the encryption is already happening." },
+            { text: "Wait to see if it gets worse", correct: false, feedback: "Every second matters with ransomware — act immediately!" }
+          ]
+        }
+      ],
+      cloud: [
+        {
+          scenario: "Your S3 bucket containing customer data is accidentally set to public. You discover this at 2am.",
+          choices: [
+            { text: "Wait until morning to fix it", correct: false, feedback: "Every minute of exposure risks customer data — act now!" },
+            { text: "Immediately set bucket to private and notify security team", correct: true, feedback: "Correct! Fix first, then notify. Speed matters in data exposure." },
+            { text: "Delete the bucket entirely", correct: false, feedback: "Don't delete — you'll lose data. Just change the permissions." },
+            { text: "Ignore it — nobody probably saw it", correct: false, feedback: "You can never assume nobody saw it. Act immediately." }
+          ]
+        }
+      ],
+      logic: [
+        {
+          scenario: "A user reports they can access another user's private files just by changing the ID number in the URL. What vulnerability is this?",
+          choices: [
+            { text: "SQL Injection", correct: false, feedback: "SQL injection is about database queries, not URL manipulation." },
+            { text: "Insecure Direct Object Reference (IDOR)", correct: true, feedback: "Correct! IDOR occurs when user-supplied input accesses objects without authorization checks." },
+            { text: "Cross-Site Scripting (XSS)", correct: false, feedback: "XSS injects malicious scripts, not access other users' data via URL." },
+            { text: "Brute Force Attack", correct: false, feedback: "Brute force is about guessing passwords, not URL manipulation." }
+          ]
+        }
+      ],
+      incident: [
+        {
+          scenario: "Your monitoring system shows 10,000 failed login attempts on your admin panel in the last 5 minutes from a single IP.",
+          choices: [
+            { text: "Wait to see if they succeed", correct: false, feedback: "Never wait during an active attack!" },
+            { text: "Block the IP, enable MFA, alert the security team", correct: true, feedback: "Correct! Block, protect, and escalate — all three steps matter." },
+            { text: "Just block the IP address", correct: false, feedback: "Blocking helps but you must also alert the team and check for breaches." },
+            { text: "Change the admin password only", correct: false, feedback: "Not enough — the attack is ongoing and needs immediate escalation." }
+          ]
+        }
+      ]
+    };
+
+    var worldMissions = missions[world] || missions.security;
+    var missionIndex = (level - 1) % worldMissions.length;
+    var currentMission = worldMissions[missionIndex];
+
+    document.getElementById("scenario-box").textContent = currentMission.scenario;
+
+    var choicesDiv = document.getElementById("choices");
+    currentMission.choices.forEach(function(choice, i) {
+      var btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = choice.text;
+      btn.onclick = function() { answer(choice, btn); };
+      choicesDiv.appendChild(btn);
+    });
+
+    function answer(choice, btn) {
+      var allBtns = document.querySelectorAll(".choice-btn");
+      allBtns.forEach(function(b) { b.disabled = true; });
+
+      var result = document.getElementById("result-box");
+      result.style.display = "block";
+
+      if (choice.correct) {
+        btn.className = "choice-btn correct";
+        xp += xpReward;
+        localStorage.setItem("xp", xp);
+        document.getElementById("stat-xp").textContent = xp;
+        result.className = "result-box correct";
+        result.innerHTML = "✓ " + choice.feedback + "<br><span class='xp-badge'>+" + xpReward + " XP</span>";
+
+        var completed = parseInt(localStorage.getItem(world + "_completed")) || 0;
+        if (level > completed) {
+          localStorage.setItem(world + "_completed", level);
+        }
+      } else {
+        btn.className = "choice-btn wrong";
+        result.className = "result-box wrong";
+        result.textContent = "✗ " + choice.feedback;
+      }
+
+      document.getElementById("next-btn").style.display = "block";
+    }
+
+    function nextMission() {
+      var nextLevel = level + 1;
+      if (nextLevel > 50) {
+        window.location.href = "worlds.html";
+        return;
+      }
+      localStorage.setItem("currentLevel", nextLevel);
+      window.location.reload();
+    }
+    var world = localStorage.getItem("currentWorld") || "security";
+var level = parseInt(localStorage.getItem("currentLevel")) || 1;
+var player = localStorage.getItem("player") || "OPERATIVE";
+
+var missions = {
+  security: [
+    {
+      title: "PHISHING ATTACK",
+      url: "http://corp.internal/inbox/suspicious_mail.php",
+      objective: "Identify the phishing attempt before credentials are stolen.",
+      threat: "EASY",
+      scenario: "An email from support@paypa1.com says your account will be suspended. There's an urgent link to click.",
+      hint: "Check the sender domain carefully. paypa1 ≠ paypal"
+    },
+    {
+      title: "PASSWORD BREACH",
+      url: "http://corp.internal/auth/login.php",
+      objective: "50,000 passwords leaked online. Respond immediately.",
+      threat: "MEDIUM",
+      scenario: "A data breach alert shows your company passwords are on the dark web. Your manager says reset a few accounts.",
+      hint: "Partial response = partial security. Think bigger."
+    },
+    {
+      title: "RANSOMWARE DETECTED",
+      url: "http://corp.internal/files/encrypted.php",
+      objective: "Files being encrypted. Stop the spread NOW.",
+      threat: "HARD",
+      scenario: "Your computer is slow. Files are being renamed with .locked extension. What do you do?",
+      hint: "Disconnect first. Every second matters."
+    }
+  ],
+  cloud: [
+    {
+      title: "S3 BUCKET EXPOSED",
+      url: "http://aws.corp.internal/s3/public_bucket",
+      objective: "Customer data is publicly accessible. Fix it NOW.",
+      threat: "MEDIUM",
+      scenario: "Your S3 bucket containing 100K customer records is accidentally set to public at 2am.",
+      hint: "Fix first. Notify second. Speed matters."
+    }
+  ],
+  logic: [
+    {
+      title: "IDOR VULNERABILITY",
+      url: "http://corp.internal/api/user?id=1337",
+      objective: "User can access other accounts by changing URL ID.",
+      threat: "HARD",
+      scenario: "A user reports they can see other users' private data by changing the ID number in the URL.",
+      hint: "This is a classic access control vulnerability."
+    }
+  ],
+  incident: [
+    {
+      title: "BRUTE FORCE ATTACK",
+      url: "http://corp.internal/admin/login.php",
+      objective: "10,000 failed login attempts in 5 minutes. Respond!",
+      threat: "EXTREME",
+      scenario: "Your monitoring system shows 10,000 failed login attempts from a single IP in the last 5 minutes.",
+      hint: "Block, protect, escalate — all three matter."
+    }
+  ]
+};
+
+var worldMissions = missions[world] || missions.security;
+var missionIndex = (level - 1) % worldMissions.length;
+var m = worldMissions[missionIndex];
+
+document.getElementById("mission-header").textContent = "MISSION LAB // " + player.toUpperCase() + " — " + world.toUpperCase() + " LVL " + level;
+document.querySelector('.text-lg.font-headline-lg').textContent = m.title;
+document.querySelector('input[value="' + "' OR 1=1 --" + '"]').value = m.hint;
+document.querySelector('.text-error').textContent = m.threat + " (LEVEL " + level + ")";
+document.querySelector('.italic').textContent = m.objective;
+document.querySelector('h2.text-lg').textContent = m.title;
+  </script>
+
+</body>
+</html>
