@@ -3,118 +3,130 @@
 <head>
   <title>NeuroForge</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #050510;
       color: #fff;
       font-family: monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 100vh;
-      margin: 0;
+      overflow: hidden;
     }
-    .hidden { display: none; }
+
+    video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 1;
+      z-index: 0;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(5,5,16,0.6);
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 64px;
+      letter-spacing: 12px;
+      color: #fff;
+      animation: glow 1.5s ease-in-out infinite alternate;
+      margin-bottom: 8px;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #a855f7; }
+      to { text-shadow: 0 0 40px #a855f7, 0 0 80px #a855f7; }
+    }
+
+    .subtitle {
+      font-size: 13px;
+      letter-spacing: 6px;
+      color: rgba(168,85,247,0.6);
+      margin-bottom: 50px;
+    }
+
     input {
       background: none;
-      border-bottom: 1px solid #a855f7;
+      border: none;
+      border-bottom: 2px solid #a855f7;
       color: #a855f7;
       font-family: monospace;
-      font-size: 18px;
+      font-size: 22px;
       text-align: center;
       outline: none;
-      padding: 8px;
-      width: 250px;
+      padding: 10px;
+      width: 300px;
       display: block;
-      margin: 20px auto;
+      margin: 0 auto 30px;
     }
+
+    input::placeholder { color: rgba(168,85,247,0.4); }
+
     button {
       background: none;
-      border: 1px solid #a855f7;
+      border: 2px solid #a855f7;
       color: #a855f7;
       font-family: monospace;
-      font-size: 14px;
-      letter-spacing: 4px;
-      padding: 12px 30px;
+      font-size: 16px;
+      letter-spacing: 6px;
+      padding: 16px 50px;
       cursor: pointer;
-      display: block;
-      margin: 10px auto;
+      transition: all 0.3s;
     }
-    button:hover { background: #a855f7; color: #050510; }
-    h1 { text-align: center; letter-spacing: 8px; color: #a855f7; }
-    p { text-align: center; color: rgba(168,85,247,0.6); letter-spacing: 2px; font-size: 13px; }
-    .mission-card {
-      border: 1px solid #a855f7;
-      padding: 30px;
-      max-width: 500px;
-      width: 100%;
+
+    button:hover {
+      background: #a855f7;
+      color: #050510;
+      box-shadow: 0 0 30px #a855f7;
     }
-    .choice {
-      background: none;
-      border: 1px solid rgba(168,85,247,0.4);
-      color: #a855f7;
-      font-family: monospace;
-      font-size: 13px;
-      padding: 12px 16px;
-      cursor: pointer;
-      display: block;
-      width: 100%;
-      text-align: left;
-      margin: 8px 0;
-      letter-spacing: 1px;
-    }
-    .choice:hover { background: rgba(168,85,247,0.1); }
-    #result { margin-top: 20px; font-size: 14px; line-height: 1.8; }
   </style>
 </head>
 <body>
 
-  <div id="start">
-    <h1>NEUROFORGE</h1>
-    <p>cyber simulation — recruit training</p>
-    <input type="text" id="name" placeholder="enter your name..." />
-    <button onclick="start()">ENTER</button>
-  </div>
+  <video autoplay muted loop playsinline>
+    <source src="bg-video.mp4" type="video/mp4">
+  </video>
 
-  <div id="game" class="hidden">
-    <div class="mission-card">
-      <p id="welcome" style="color:#a855f7; margin-bottom:20px;"></p>
-      <p style="color:rgba(168,85,247,0.5); font-size:11px; letter-spacing:3px;">MISSION 01</p>
-      <h2 style="letter-spacing:3px; margin: 10px 0;">PHISHING EMAIL</h2>
-      <p style="color:rgba(255,255,255,0.7); font-size:14px; line-height:1.8; text-align:left;">
-        An email from support@paypa1.com says your account will be suspended. There's a link to click urgently. What do you do?
-      </p>
-      <div id="choices">
-        <button class="choice" onclick="answer(false, 'Wrong! Never click suspicious links. paypa1 is not paypal!')">Click the link to verify</button>
-        <button class="choice" onclick="answer(false, 'Close! But you should report it to IT too.')">Ignore it</button>
-        <button class="choice" onclick="answer(true, 'Correct! You spotted the fake domain!')">Report to IT and delete it</button>
-      </div>
-      <div id="result"></div>
-    </div>
+  <div class="overlay"></div>
+
+  <div class="content">
+    <h1>NEUROFORGE</h1>
+    <p class="subtitle">Cyber Simulation</p>
+    <input type="text" id="name" placeholder="Enter your name..." />
+    <button onclick="startGame()">ENTER</button>
   </div>
 
   <script>
-    function start() {
-      var name = document.getElementById("name").value;
-      if (name === "") return;
-      document.getElementById("start").className = "hidden";
-      document.getElementById("game").className = "";
-      document.getElementById("welcome").textContent = "Ready, " + name + "? Your mission awaits.";
-    }
-
-    function answer(correct, feedback) {
-      document.getElementById("choices").style.display = "none";
-      var result = document.getElementById("result");
-      if (correct) {
-        result.style.color = "#a855f7";
-        result.textContent = "✓ " + feedback + " | +100 XP";
-      } else {
-        result.style.color = "#ff4444";
-        result.textContent = "✗ " + feedback;
-      }
-    }
+    function startGame() {
+  var name = document.getElementById("name").value;
+  if (name === "") return;
+  
+  localStorage.setItem("player", name);
+  
+  var existingID = localStorage.getItem("playerID");
+  if (!existingID) {
+    var id = "NF-" + Math.floor(10000 + Math.random() * 90000);
+    localStorage.setItem("playerID", id);
+  }
+  
+  window.location.href = "character-select.html";
+}
   </script>
 
 </body>
-</html>
-  </body>
 </html>
