@@ -7,6 +7,8 @@
     body { background: #050510; color: #fff; font-family: monospace; }
 
     nav {
+      position: relative;
+      z-index: 1;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -17,16 +19,6 @@
     .nav-links { display: flex; gap: 30px; font-size: 13px; }
     .nav-links a { color: rgba(168,85,247,0.6); text-decoration: none; letter-spacing: 2px; }
     .nav-links a:hover { color: #a855f7; }
-    .play-btn {
-      background: #a855f7;
-      color: #050510;
-      border: none;
-      padding: 10px 24px;
-      font-family: monospace;
-      font-size: 13px;
-      letter-spacing: 2px;
-      cursor: pointer;
-    }
 
     .hero {
       position: relative;
@@ -38,6 +30,16 @@
       overflow: hidden;
       min-height: 500px;
     }
+
+    .hero-img {
+      position: fixed;
+      right: 0; top: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
     .hero-text { z-index: 2; max-width: 500px; }
     .hero-text h1 {
       font-size: 48px;
@@ -47,21 +49,29 @@
     }
     .hero-text h1 span { color: #a855f7; }
     .hero-text p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
+      font-size: 18px;
+      color: rgba(255,255,255,0.9);
       margin: 16px 0 24px;
       line-height: 1.8;
+      animation: glow 1.5s ease-in-out infinite alternate;
     }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #a855f7; }
+      to { text-shadow: 0 0 20px #a855f7, 0 0 40px #a855f7; }
+    }
+
     .hero-btns { display: flex; gap: 12px; }
     .btn-primary {
       background: #a855f7;
       color: #050510;
       border: none;
-      padding: 12px 24px;
+      padding: 16px 48px;
       font-family: monospace;
-      font-size: 13px;
-      letter-spacing: 2px;
+      font-size: 16px;
+      letter-spacing: 4px;
       cursor: pointer;
+      z-index: 2;
     }
     .btn-secondary {
       background: none;
@@ -72,19 +82,8 @@
       font-size: 13px;
       letter-spacing: 2px;
       cursor: pointer;
+      z-index: 2;
     }
-
-    .hero-img {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.3;
-  z-index: 1;
-}
-    
 
     .hero-stats {
       position: relative;
@@ -97,7 +96,7 @@
     .stat-num { font-size: 28px; font-weight: bold; color: #a855f7; }
     .stat-lbl { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; }
 
-    .worlds { padding: 40px; }
+    .worlds { padding: 40px; position: relative; z-index: 1; }
     .worlds h2 { letter-spacing: 4px; color: #a855f7; margin-bottom: 8px; }
     .worlds p { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
     .world-grid {
@@ -106,43 +105,52 @@
       gap: 16px;
     }
     .world-card {
-      border: 1px solid rgba(168,85,247,0.3);
-      padding: 20px;
+      border: 2px solid rgba(168,85,247,0.5);
+      padding: 24px;
       cursor: pointer;
       transition: all 0.3s;
+      background: rgba(168,85,247,0.05);
     }
-    .world-card:hover { border-color: #a855f7; background: rgba(168,85,247,0.05); }
+    .world-card:hover { border-color: #a855f7; background: rgba(168,85,247,0.1); }
     .world-icon { font-size: 20px; margin-bottom: 10px; }
     .world-name { font-size: 14px; letter-spacing: 2px; color: #a855f7; margin-bottom: 6px; }
     .world-desc { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+
+    .agent-display {
+      position: fixed;
+      bottom: 0;
+      right: 40px;
+      z-index: 3;
+      height: 320px;
+    }
+    .agent-display img { height: 100%; object-fit: contain; }
   </style>
 </head>
 <body>
 
   <nav>
-    <div class="logo">NEUROFORGE</div>
+    <div class="logo" id="logo">NEUROFORGE</div>
     <div class="nav-links">
-      <a href="#">Worlds</a>
+      <a href="worlds.html">Worlds</a>
       <a href="#">Missions</a>
-      <a href="#">Leaderboard</a>
+      <a href="leaderboard.html">Leaderboard</a>
     </div>
-    <button class="play-btn" onclick="window.location.href='index.html'">PLAY NOW →</button>
   </nav>
 
   <div class="hero">
     <img src="characters.jpeg" class="hero-img" />
     <div class="hero-text">
       <h1>Forge Your Mind.<br><span>Defend</span><br>The Future.</h1>
-      <p>NeuroForge is an interactive cybersecurity simulation. Make decisions. Face threats. Evolve.</p>
+      <p id="welcome-msg">Make decisions. Face threats. Evolve.</p>
       <div class="hero-btns">
-        <button class="btn-primary" onclick="window.location.href='index.html'">Enter Simulation →</button>
-        <button class="btn-secondary">Explore Worlds</button>
+        <button class="btn-primary" onclick="window.location.href='worlds.html'">PLAY NOW →</button>
+        <button class="btn-secondary" onclick="window.location.href='character-select.html'">CHOOSE AGENT ⚔️</button>
       </div>
     </div>
     <div class="hero-stats">
-      <div><div class="stat-num">25+</div><div class="stat-lbl">Worlds</div></div>
-      <div><div class="stat-num">250+</div><div class="stat-lbl">Missions</div></div>
-      <div><div class="stat-num">50K+</div><div class="stat-lbl">Agents Trained</div></div>
+      <div><div class="stat-num">4</div><div class="stat-lbl">Worlds</div></div>
+      <div><div class="stat-num">200</div><div class="stat-lbl">Missions</div></div>
+      <div><div class="stat-num">∞</div><div class="stat-lbl">Possibilities</div></div>
     </div>
   </div>
 
@@ -150,28 +158,42 @@
     <h2>EXPLORE WORLDS</h2>
     <p>Each world is a simulation. Each decision shapes your path.</p>
     <div class="world-grid">
-      <div class="world-card">
-        <div class="world-icon">🛡</div>
+      <div class="world-card" onclick="window.location.href='security.html'">
+        <div class="world-icon">🔐</div>
         <div class="world-name">Security World</div>
         <div class="world-desc">Defend systems. Stop breaches. Protect what matters.</div>
       </div>
-      <div class="world-card">
+      <div class="world-card" onclick="window.location.href='cloud.html'">
         <div class="world-icon">☁️</div>
         <div class="world-name">Cloud World</div>
         <div class="world-desc">Navigate cloud infra. Secure what floats.</div>
       </div>
-      <div class="world-card">
+      <div class="world-card" onclick="window.location.href='logic.html'">
         <div class="world-icon">⚡</div>
         <div class="world-name">Logic World</div>
         <div class="world-desc">Solve. Analyze. Think like an analyst.</div>
       </div>
-      <div class="world-card">
+      <div class="world-card" onclick="window.location.href='incident.html'">
         <div class="world-icon">🔥</div>
         <div class="world-name">Incident Response</div>
         <div class="world-desc">When attacks happen, your response defines all.</div>
       </div>
     </div>
   </div>
+
+  <script>
+    var player = localStorage.getItem("player");
+    var playerID = localStorage.getItem("playerID");
+    var agentImg = localStorage.getItem("agentImg");
+    var agentName = localStorage.getItem("agentName");
+
+    if (player) {
+      document.getElementById("logo").textContent = "NEUROFORGE — " + player.toUpperCase();
+      document.getElementById("welcome-msg").textContent = "READY TO PLAY, " + player.toUpperCase() + " " + playerID + " — MAKE DECISIONS. FACE THREATS. EVOLVE.";
+    }
+
+    
+  </script>
 
 </body>
 </html>
