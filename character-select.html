@@ -179,12 +179,27 @@
   document.getElementById("prevBtn2").addEventListener("click", goPrev);
 
   document.getElementById("confirmBtn").addEventListener("click", function() {
-    var a = agents[current];
-    localStorage.setItem("agentName", a.name);
-    localStorage.setItem("agentRole", a.role);
-    localStorage.setItem("agentImg", a.img);
+  var a = agents[current];
+  localStorage.setItem("agentName", a.name);
+  localStorage.setItem("agentRole", a.role);
+  localStorage.setItem("agentImg", a.img);
+
+  // Save to database!
+  fetch("http://localhost:3000/api/user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: localStorage.getItem("player"),
+      unique_id: localStorage.getItem("playerID"),
+      agent_name: a.name,
+      agent_img: a.img
+    })
+  }).then(() => {
+    window.location.href = "dashboard.html";
+  }).catch(() => {
     window.location.href = "dashboard.html";
   });
+});
 
   const createParticles = () => {
     const body = document.body;
