@@ -123,9 +123,9 @@
         <div class="world-desc">Defend systems. Stop breaches. Protect what matters. Face real threats from phishing to full scale attacks.</div>
         <div class="world-progress">
           <span class="progress-label">PROGRESS</span>
-          <span class="progress-count">0/50</span>
+          <span class="progress-count" id="sec-count">0/50</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="progress-bar"><div class="progress-fill" id="sec-fill" style="width:0%"></div></div>
         <span class="difficulty">BEGINNER FRIENDLY</span>
       </div>
 
@@ -135,9 +135,9 @@
         <div class="world-desc">Navigate cloud infrastructure. Secure what floats. Handle misconfigurations and cloud breaches.</div>
         <div class="world-progress">
           <span class="progress-label">PROGRESS</span>
-          <span class="progress-count">0/50</span>
+          <span class="progress-count" id="cld-count">0/50</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="progress-bar"><div class="progress-fill" id="cld-fill" style="width:0%"></div></div>
         <span class="difficulty">INTERMEDIATE</span>
       </div>
 
@@ -147,9 +147,9 @@
         <div class="world-desc">Solve. Analyze. Think like an analyst. Crack puzzles and outsmart adversaries with pure logic.</div>
         <div class="world-progress">
           <span class="progress-label">PROGRESS</span>
-          <span class="progress-count">0/50</span>
+          <span class="progress-count" id="lgc-count">0/50</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="progress-bar"><div class="progress-fill" id="lgc-fill" style="width:0%"></div></div>
         <span class="difficulty">ADVANCED</span>
       </div>
 
@@ -159,9 +159,9 @@
         <div class="world-desc">When attacks happen your response defines all. Race against time to contain and neutralize threats.</div>
         <div class="world-progress">
           <span class="progress-label">PROGRESS</span>
-          <span class="progress-count">0/50</span>
+          <span class="progress-count" id="inc-count">0/50</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="progress-bar"><div class="progress-fill" id="inc-fill" style="width:0%"></div></div>
         <span class="difficulty">EXPERT</span>
       </div>
 
@@ -173,6 +173,19 @@
     if (player) {
       document.querySelector('.logo').textContent = "NEUROFORGE — " + player.toUpperCase();
     }
+
+    var worlds = [
+      { key: "security", countId: "sec-count", fillId: "sec-fill" },
+      { key: "cloud",    countId: "cld-count", fillId: "cld-fill" },
+      { key: "logic",    countId: "lgc-count", fillId: "lgc-fill" },
+      { key: "incident", countId: "inc-count", fillId: "inc-fill" }
+    ];
+
+    worlds.forEach(function(w) {
+      var completed = parseInt(localStorage.getItem(w.key + "_completed")) || 0;
+      document.getElementById(w.countId).textContent = completed + "/50";
+      document.getElementById(w.fillId).style.width = (completed / 50 * 100) + "%";
+    });
   </script>
 
 </body>
