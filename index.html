@@ -57,7 +57,21 @@
       font-size: 13px;
       letter-spacing: 6px;
       color: rgba(168,85,247,0.6);
-      margin-bottom: 50px;
+      margin-bottom: 16px;
+    }
+
+    .returning {
+      font-size: 14px;
+      color: rgba(168,85,247,0.8);
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+      max-width: 500px;
+      line-height: 1.8;
+      font-weight: bold;
+    }
+
+    .returning span {
+      color: #a855f7;
     }
 
     input {
@@ -66,16 +80,22 @@
       border-bottom: 2px solid #a855f7;
       color: #a855f7;
       font-family: monospace;
-      font-size: 22px;
+      font-size: 18px;
       text-align: center;
       outline: none;
       padding: 10px;
       width: 300px;
       display: block;
-      margin: 0 auto 30px;
+      margin: 0 auto 16px;
     }
 
     input::placeholder { color: rgba(168,85,247,0.4); }
+
+    .id-input {
+      font-size: 14px;
+      border-bottom: 1px solid rgba(168,85,247,0.3);
+      margin-bottom: 30px;
+    }
 
     button {
       background: none;
@@ -106,26 +126,45 @@
 
   <div class="content">
     <h1>NEUROFORGE</h1>
-    <p class="subtitle">Cyber Simulation</p>
+    <p class="subtitle">CYBER SIMULATION</p>
+    <p class="returning">
+      Returning player? Enter your name and your UNIQUE ID<br>
+      (e.g. <span>NF-47291</span>) to restore your progress!<br>
+      New player? Just enter your name and we'll create your ID!
+    </p>
     <input type="text" id="name" placeholder="Enter your name..." />
+    <input type="text" id="existing-id" class="id-input" placeholder="Your ID (optional — e.g. NF-47291)" />
     <button onclick="startGame()">ENTER</button>
   </div>
 
   <script>
     function startGame() {
-  var name = document.getElementById("name").value;
-  if (name === "") return;
-  
-  localStorage.setItem("player", name);
-  
-  var existingID = localStorage.getItem("playerID");
-  if (!existingID) {
-    var id = "NF-" + Math.floor(10000 + Math.random() * 90000);
-    localStorage.setItem("playerID", id);
-  }
-  
-  window.location.href = "character-select.html";
+      var existingPlayer = localStorage.getItem("player");
+if (existingPlayer && existingPlayer !== name) {
+  localStorage.removeItem("xp");
+  localStorage.removeItem("security_completed");
+  localStorage.removeItem("cloud_completed");
+  localStorage.removeItem("logic_completed");
+  localStorage.removeItem("incident_completed");
 }
+      var name = document.getElementById("name").value;
+      if (name === "") return;
+
+      localStorage.setItem("player", name);
+
+      var existingID = document.getElementById("existing-id").value.trim();
+      if (existingID && existingID.startsWith("NF-")) {
+        localStorage.setItem("playerID", existingID);
+      } else {
+        var currentID = localStorage.getItem("playerID");
+        if (!currentID) {
+          var id = "NF-" + Math.floor(10000 + Math.random() * 90000);
+          localStorage.setItem("playerID", id);
+        }
+      }
+
+      window.location.href = "character-select.html";
+    }
   </script>
 
 </body>
