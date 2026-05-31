@@ -75,14 +75,13 @@ app.get('/api/progress/:unique_id', (req, res) => {
 app.post('/api/hint', async (req, res) => {
   const { scenario } = req.body;
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const response = await fetch(`${process.env.AZURE_OPENAI_ENDPOINT}openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-02-01`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
+        'api-key': process.env.AZURE_OPENAI_KEY
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192',
         messages: [{
           role: 'user',
           content: 'You are a cybersecurity training AI agent. Give a SHORT hint (1-2 sentences max) for this scenario without giving away the answer: ' + scenario
@@ -94,6 +93,45 @@ app.post('/api/hint', async (req, res) => {
     res.json({ hint: data.choices[0].message.content });
   } catch (err) {
     res.json({ hint: 'Think carefully about the security implications of each choice.' });
+  }
+});
+
+app.post('/api/generate-mission', async (req, res) => {
+  const { world, level, difficulty } = req.body;
+  try {
+    const response = await fetch(`${process.env.AZURE_OPENAI_ENDPOINT}openai/deployments/${process.env.AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-02-01`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': process.env.AZURE_OPENAI_KEY
+      },
+      body: JSON.stringify({
+        messages: [{
+          role: 'user',
+          content: `Generate a cybersecurity training mission for a ${difficulty} level ${world} scenario. Return ONLY valid JSON in this exact format with no extra text:
+          {
+            "title": "MISSION TITLE IN CAPS",
+            "url": "HTTPS://CORP.INTERNAL/SOMETHING",
+            "objective": "One line objective",
+            "scenario": "2-3 sentence scenario description",
+            "choices": [
+              {"text": "Choice 1", "correct": false, "feedback": "Explanation"},
+              {"text": "Choice 2", "correct": true, "feedback": "Explanation"},
+              {"text": "Choice 3", "correct": false, "feedback": "Explanation"},
+              {"text": "Choice 4", "correct": false, "feedback": "Explanation"}
+            ]
+          }`
+        }],
+        max_tokens: 500
+      })
+    });
+    const data = await response.json();
+    const text = data.choices[0].message.content;
+    const clean = text.replace(/```json|```/g, '').trim();
+    const mission = JSON.parse(clean);
+    res.json(mission);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to generate mission' });
   }
 });
 
