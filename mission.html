@@ -89,7 +89,7 @@
 </header>
 
 <div class="flex h-[calc(100vh-80px)] relative z-20 overflow-y-auto">
-  <aside class="h-full w-64 bg-surface-container-lowest/20 backdrop-blur-xl border-r border-white/5 flex flex-col py-gutter px-4 shrink-0">
+  <aside class="h-full w-64 bg-surface-container-lowest/20 backdrop-blur-xl border-r border-white/5 flex flex-col py-gutter px-4 shrink-0 overflow-y-auto">
     <div class="mb-6 flex flex-col items-center">
       <div class="w-32 h-32 rounded-xl border-2 border-secondary/50 mb-4 overflow-hidden glow-cyan">
         <img id="side-agent" alt="Agent" class="w-full h-full object-contain" src="agent-3.png"/>
@@ -136,13 +136,13 @@
       </a>
     </nav>
 
-    <button id="next-btn" onclick="nextMission()" class="mt-auto w-full py-4 bg-primary/80 text-on-primary font-label-caps text-label-caps rounded hover:bg-primary transition-colors active:scale-95 hidden">
+    <button id="next-btn" onclick="nextMission()" class="mt-6 w-full py-4 bg-primary/80 text-on-primary font-label-caps text-label-caps rounded hover:bg-primary transition-colors active:scale-95 hidden">
       NEXT_MISSION →
     </button>
   </aside>
 
   <main class="flex-1 flex flex-col overflow-y-auto relative">
-    <div class="p-8 flex-1 flex gap-8"style="height: calc(100% - 180px);">
+    <div class="p-8 flex-1 flex gap-8">
       <div class="w-1/3 flex flex-col gap-6 justify-center">
         <div class="glass-panel rounded-xl p-6">
           <div class="space-y-4">
@@ -165,6 +165,9 @@
           <div class="font-label-caps text-label-caps mb-2" id="result-title">RESULT</div>
           <div class="font-code-sm text-code-sm text-on-surface-variant leading-relaxed" id="result-text"></div>
           <div id="xp-earned" class="mt-3 font-label-caps text-label-caps text-secondary hidden"></div>
+          <button id="next-btn-main" onclick="nextMission()" class="mt-4 w-full py-3 bg-primary/80 text-on-primary font-label-caps text-label-caps rounded hover:bg-primary transition-colors active:scale-95 hidden">
+            NEXT_MISSION →
+          </button>
         </div>
       </div>
 
@@ -184,8 +187,8 @@
 
           <div class="flex-1 p-8 flex flex-col">
             <div class="mb-6">
-              <h1 class="font-display-lg text-primary text-2xl tracking-tight uppercase mb-2" id="mission-title">LOADING MISSION...</h1>
-              <p class="text-on-surface-variant font-code-sm text-sm border-l-2 border-primary/30 pl-3" id="mission-scenario">Initializing...</p>
+              <h1 class="font-display-lg text-primary text-2xl tracking-tight uppercase mb-2" id="mission-title">GENERATING MISSION...</h1>
+              <p class="text-on-surface-variant font-code-sm text-sm border-l-2 border-primary/30 pl-3" id="mission-scenario">AI is creating your mission...</p>
             </div>
 
             <div id="choices-container" class="mt-auto space-y-3 overflow-y-auto max-h-48">
@@ -200,7 +203,7 @@
         <div class="px-4 py-2 bg-white/5 border-b border-white/10 flex justify-between items-center">
           <span class="font-label-caps text-label-caps text-primary/70 text-[10px]">AGENT_TERMINAL</span>
           <button id="hint-btn" onclick="getHint()" class="font-label-caps text-label-caps text-[10px] text-tertiary border border-tertiary/30 px-3 py-1 hover:bg-tertiary/10 transition-all">
-            REQUEST HINT FROM AGENT 
+            REQUEST HINT FROM AGENT
           </button>
         </div>
         <div class="flex-1 p-4 font-code-sm text-code-sm text-secondary-container/80 overflow-y-auto cyber-scroll" id="terminal-content">
@@ -223,8 +226,6 @@
 </div>
 
 <script>
-  
-
   var player = localStorage.getItem("player") || "OPERATIVE";
   var playerID = localStorage.getItem("playerID") || "NF-00000";
   var agentImg = localStorage.getItem("agentImg") || "agent-3.png";
@@ -233,6 +234,7 @@
   var xp = parseInt(localStorage.getItem("xp")) || 0;
   var hintTimer;
   var answered = false;
+  var currentMission = null;
 
   document.getElementById("header-title").textContent = "NEUROFORGE — " + player.toUpperCase();
   document.getElementById("header-xp").textContent = xp;
@@ -250,148 +252,40 @@
   document.getElementById("threat-level").textContent = difficulty;
   updateXPBar();
 
-  var missions = {
-    security: [
-      {
-        title: "PHISHING ATTACK DETECTED",
-        url: "HTTPS://CORP.INTERNAL/INBOX/SUSPICIOUS_MAIL",
-        objective: "Identify the phishing attempt before credentials are stolen.",
-        scenario: "An urgent email arrived from support@paypa1.com saying your account will be suspended unless you click a link immediately. The sender is demanding immediate action.",
-        choices: [
-          { text: "Click the link to verify your account", correct: false, feedback: "WRONG: The domain paypa1 is not paypal. This is a classic phishing attack using domain spoofing." },
-          { text: "Ignore it and delete the email", correct: false, feedback: "INCOMPLETE: You should also report it to IT security so they can warn others." },
-          { text: "Report to IT security and delete", correct: true, feedback: "CORRECT: You identified the spoofed domain and took proper action. The IT team can now block the sender." },
-          { text: "Forward to colleagues to warn them", correct: false, feedback: "DANGER: Never forward suspicious emails — you could spread malware to your colleagues!" }
-        ]
-      },
-      {
-        title: "PASSWORD SHARING REQUEST",
-        url: "HTTPS://CORP.INTERNAL/AUTH/REQUEST",
-        objective: "Handle a social engineering attempt correctly.",
-        scenario: "A colleague calls asking for your password to finish an urgent project while you're out sick. They say management approved it and it's time-sensitive.",
-        choices: [
-          { text: "Give them the password since it's urgent", correct: false, feedback: "CRITICAL ERROR: Never share passwords — even with trusted colleagues!" },
-          { text: "Refuse and suggest they contact IT for access", correct: true, feedback: "CORRECT: Legitimate access requests always go through IT, never direct password sharing." },
-          { text: "Give a temporary password you'll change later", correct: false, feedback: "WRONG: Any password sharing violates security policy regardless of intent." },
-          { text: "Ignore the call entirely", correct: false, feedback: "INCOMPLETE: You should respond and direct them to proper channels." }
-        ]
-      },
-      {
-        title: "RANSOMWARE DETECTED",
-        url: "HTTPS://CORP.INTERNAL/FILES/ENCRYPTED",
-        objective: "Stop the ransomware from spreading across the network.",
-        scenario: "Your computer is running slowly and files are being renamed with .locked extensions. The encryption is happening in real time.",
-        choices: [
-          { text: "Restart the computer to fix it", correct: false, feedback: "WRONG: Restarting won't help and may make things worse!" },
-          { text: "Immediately disconnect from network and call IT", correct: true, feedback: "CORRECT: Disconnecting stops the ransomware from spreading to other machines!" },
-          { text: "Try to delete the suspicious files", correct: false, feedback: "TOO LATE: The encryption is already happening — deleting won't stop it." },
-          { text: "Wait to see if it gets worse", correct: false, feedback: "CRITICAL: Every second matters with ransomware — act immediately!" }
-        ]
-      }
-    ],
-    cloud: [
-      {
-        title: "S3 BUCKET EXPOSED",
-        url: "HTTPS://AWS.CORP.INTERNAL/S3/PUBLIC",
-        objective: "Customer data is publicly accessible. Fix it immediately.",
-        scenario: "Your S3 bucket containing 100K customer records is accidentally set to public. You discover this at 2am. What do you do first?",
-        choices: [
-          { text: "Wait until morning to fix it properly", correct: false, feedback: "WRONG: Every minute of exposure puts customer data at risk!" },
-          { text: "Set bucket to private and notify security team", correct: true, feedback: "CORRECT: Fix first, notify second. Speed is critical in data exposure incidents." },
-          { text: "Delete the bucket entirely", correct: false, feedback: "WRONG: Deleting destroys the data. Just change the permissions!" },
-          { text: "Ignore it — nobody probably saw it", correct: false, feedback: "CRITICAL: You can never assume nobody saw it. Act immediately!" }
-        ]
-      },
-      {
-        title: "MISCONFIGURED FIREWALL",
-        url: "HTTPS://CLOUD.CORP.INTERNAL/FIREWALL",
-        objective: "Port 22 is open to the entire internet.",
-        scenario: "A security scan shows your cloud server has SSH port 22 open to 0.0.0.0/0 — meaning anyone on the internet can attempt to connect.",
-        choices: [
-          { text: "Ignore it — SSH is secure enough", correct: false, feedback: "WRONG: Open SSH to the entire internet is a massive security risk!" },
-          { text: "Restrict port 22 to specific IP ranges only", correct: true, feedback: "CORRECT: Always restrict SSH access to known IP addresses or use a VPN." },
-          { text: "Change the SSH port to 2222", correct: false, feedback: "INCOMPLETE: Security through obscurity is not enough. Restrict access by IP." },
-          { text: "Disable SSH entirely", correct: false, feedback: "OVERKILL: You need SSH for management. Just restrict who can access it." }
-        ]
-      }
-    ],
-    logic: [
-      {
-        title: "IDOR VULNERABILITY",
-        url: "HTTPS://CORP.INTERNAL/API/USER?ID=1337",
-        objective: "Identify and classify the vulnerability type.",
-        scenario: "A user reports they can access another user's private files just by changing the ID number in the URL from their own ID to someone else's ID.",
-        choices: [
-          { text: "SQL Injection", correct: false, feedback: "WRONG: SQL injection targets database queries, not URL parameter access control." },
-          { text: "Insecure Direct Object Reference (IDOR)", correct: true, feedback: "CORRECT: IDOR occurs when user input directly accesses objects without proper authorization checks." },
-          { text: "Cross-Site Scripting (XSS)", correct: false, feedback: "WRONG: XSS injects malicious scripts into web pages — not the same as unauthorized data access." },
-          { text: "Brute Force Attack", correct: false, feedback: "WRONG: Brute force involves guessing credentials repeatedly — not URL manipulation." }
-        ]
-      },
-      {
-        title: "SQL INJECTION ATTEMPT",
-        url: "HTTPS://CORP.INTERNAL/LOGIN",
-        objective: "Identify the attack type from the log entry.",
-        scenario: "Security logs show a login attempt with username: admin'-- and password: anything. The login succeeded despite the wrong password.",
-        choices: [
-          { text: "Brute Force Attack", correct: false, feedback: "WRONG: Brute force tries many passwords. This bypassed authentication entirely." },
-          { text: "SQL Injection", correct: true, feedback: "CORRECT: The admin'-- comment terminated the SQL query, bypassing the password check entirely." },
-          { text: "IDOR Vulnerability", correct: false, feedback: "WRONG: IDOR is about accessing objects via URL parameters, not authentication bypass." },
-          { text: "Phishing Attack", correct: false, feedback: "WRONG: Phishing tricks users into giving credentials. This directly manipulated the database query." }
-        ]
-      }
-    ],
-    incident: [
-      {
-        title: "BRUTE FORCE ATTACK",
-        url: "HTTPS://CORP.INTERNAL/ADMIN/LOGIN",
-        objective: "10,000 failed login attempts detected. Respond immediately.",
-        scenario: "Your monitoring system shows 10,000 failed login attempts on your admin panel in the last 5 minutes all from IP 45.33.32.156.",
-        choices: [
-          { text: "Wait to see if they succeed", correct: false, feedback: "CRITICAL: Never wait during an active attack!" },
-          { text: "Block the IP, enable MFA, alert security team", correct: true, feedback: "CORRECT: Block the threat, add protection, and escalate — all three steps are essential." },
-          { text: "Just block the IP address", correct: false, feedback: "INCOMPLETE: Blocking helps but you must also alert the team and check for breaches." },
-          { text: "Change the admin password only", correct: false, feedback: "NOT ENOUGH: The attack is ongoing and needs immediate full incident response." }
-        ]
-      },
-      {
-        title: "DATA EXFILTRATION ALERT",
-        url: "HTTPS://CORP.INTERNAL/NETWORK/MONITOR",
-        objective: "Unusual outbound traffic detected — respond fast.",
-        scenario: "Network monitoring shows 50GB of data being transferred to an unknown external IP at 3am. This is 100x the normal traffic.",
-        choices: [
-          { text: "Wait until morning to investigate", correct: false, feedback: "WRONG: Active data theft is happening right now — every second counts!" },
-          { text: "Block the outbound connection and isolate the server", correct: true, feedback: "CORRECT: Stop the bleeding first, then investigate. Isolate the compromised system immediately." },
-          { text: "Just monitor the traffic to gather evidence", correct: false, feedback: "WRONG: You're letting the attacker steal more data while you watch!" },
-          { text: "Restart the server to stop the transfer", correct: false, feedback: "INCOMPLETE: Restarting may destroy forensic evidence. Isolate the network connection instead." }
-        ]
-      }
-    ]
-  };
+  fetch("http://localhost:3000/api/generate-mission", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ world: world, level: level, difficulty: difficulty })
+  })
+  .then(r => r.json())
+  .then(function(mission) {
+    currentMission = mission;
+    document.getElementById("mission-title").textContent = mission.title;
+    document.getElementById("mission-scenario").textContent = mission.scenario;
+    document.getElementById("mission-objective").textContent = mission.objective;
+    document.getElementById("mission-url").textContent = mission.url;
 
-  var worldMissions = missions[world] || missions.security;
-  var missionIndex = (level - 1) % worldMissions.length;
-  var currentMission = worldMissions[missionIndex];
+    var choicesContainer = document.getElementById("choices-container");
+    choicesContainer.innerHTML = "";
+    mission.choices.forEach(function(choice) {
+      var btn = document.createElement("button");
+      btn.className = "w-full py-3 bg-primary/10 text-primary border border-primary/30 font-label-caps text-label-caps rounded hover:bg-primary/20 hover:border-primary transition-all active:scale-95 text-left px-4";
+      btn.textContent = choice.text;
+      btn.addEventListener("click", function() { answer(choice, btn); });
+      choicesContainer.appendChild(btn);
+    });
 
-  document.getElementById("mission-title").textContent = currentMission.title;
-  document.getElementById("mission-scenario").textContent = currentMission.scenario;
-  document.getElementById("mission-objective").textContent = currentMission.objective;
-  document.getElementById("mission-url").textContent = currentMission.url;
-
-  var choicesContainer = document.getElementById("choices-container");
-  currentMission.choices.forEach(function(choice) {
-    var btn = document.createElement("button");
-    btn.className = "w-full py-3 bg-primary/10 text-primary border border-primary/30 font-label-caps text-label-caps rounded hover:bg-primary/20 hover:border-primary transition-all active:scale-95 text-left px-4";
-    btn.textContent = choice.text;
-    btn.addEventListener("click", function() { answer(choice, btn); });
-    choicesContainer.appendChild(btn);
+    hintTimer = setTimeout(function() {
+      if (!answered) {
+        addToTerminal("AGENT", "You seem to be taking a while... Think about what makes this situation suspicious. Look carefully at the details!", "text-primary/80");
+      }
+    }, 30000);
+  })
+  .catch(function() {
+    document.getElementById("mission-title").textContent = "MISSION LOAD ERROR";
+    document.getElementById("mission-scenario").textContent = "Could not generate mission. Please refresh!";
+    document.getElementById("mission-objective").textContent = "Error loading mission.";
   });
-
-  hintTimer = setTimeout(function() {
-    if (!answered) {
-      addToTerminal("AGENT", "You seem to be taking a while... Think about what makes this situation suspicious. Look carefully at the details!", "text-primary/80");
-    }
-  }, 30000);
 
   function answer(choice, btn) {
     if (answered) return;
@@ -446,26 +340,29 @@
     }
 
     document.getElementById("next-btn").classList.remove("hidden");
+    document.getElementById("next-btn-main").classList.remove("hidden");
     document.getElementById("mission-status").textContent = choice.correct ? "● COMPLETE" : "● FAILED";
   }
 
- function getHint() {
-  addToTerminal("AGENT", "Analyzing mission... requesting hint...", "text-primary/60");
-  
-  fetch("http://localhost:3000/api/hint", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ scenario: currentMission.scenario })
-  })
-  .then(r => r.json())
-  .then(data => {
-    addToTerminal("AGENT", data.hint, "text-primary/80");
-  })
-  .catch(() => {
-    addToTerminal("AGENT", "Think carefully about the security implications of each choice.", "text-primary/80");
-  });
-}
-    
+  function getHint() {
+    if (!currentMission) {
+      addToTerminal("AGENT", "Mission still loading, please wait...", "text-primary/60");
+      return;
+    }
+    addToTerminal("AGENT", "Analyzing mission... requesting hint...", "text-primary/60");
+    fetch("http://localhost:3000/api/hint", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ scenario: currentMission.scenario })
+    })
+    .then(r => r.json())
+    .then(data => {
+      addToTerminal("AGENT", data.hint, "text-primary/80");
+    })
+    .catch(() => {
+      addToTerminal("AGENT", "Think carefully about the security implications of each choice.", "text-primary/80");
+    });
+  }
 
   function addToTerminal(source, message, colorClass) {
     var terminal = document.getElementById("terminal-content");
