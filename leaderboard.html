@@ -129,6 +129,16 @@
   var logo = document.querySelector('.logo');
   if (currentPlayer) logo.textContent = "NEUROFORGE — " + currentPlayer.toUpperCase();
 
+  function getBadge(xp) {
+    if (xp >= 15000) return "🔴 Cyber Commander";
+    if (xp >= 10000) return "🟠 Threat Analyst";
+    if (xp >= 5000) return "🟡 Security Agent";
+    if (xp >= 2000) return "🟢 Firewall Guard";
+    if (xp >= 1000) return "🔵 Phishing Hunter";
+    if (xp >= 500) return "🟣 Incident Responder";
+    return "⚪ Recruit";
+  }
+
   fetch("http://localhost:3000/api/leaderboard")
     .then(r => r.json())
     .then(function(players) {
@@ -151,7 +161,7 @@
             <div class="player-id">${p.unique_id}</div>
           </td>
           <td class="xp">${Number(p.total_xp).toLocaleString()} XP</td>
-          <td><span class="badge">${p.badge || 'Recruit'}</span></td>
+          <td><span class="badge">${getBadge(Number(p.total_xp))}</span></td>
         `;
         tbody.appendChild(row);
       });
@@ -164,6 +174,5 @@
       `;
     });
 </script>
-
 </body>
 </html>
