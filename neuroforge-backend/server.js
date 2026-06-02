@@ -5,7 +5,13 @@ const dotenv = require('dotenv');
 dotenv.config({ path: __dirname + '/.env' });
 
 const app = express();
-app.use(cors());
+
+// Updated CORS to explicitly support your live Netlify site smoothly
+app.use(cors({
+  origin: 'https://neuroforge-rhea.netlify.app',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(express.json());
 
 const db = mysql.createConnection({
@@ -116,7 +122,7 @@ LEVEL: ${level}
 DIFFICULTY: ${difficulty}
 
 STRICT RULES:
-- Generate ONLY topics specific to the ${world} world (see below)
+- Generate ONLY topics specific to the ${world} world
 - As level increases make scenarios MORE complex, twisted and harder to identify
 - At high levels add red herrings, misleading details, and make wrong answers tempting
 - NEVER generate the same scenario twice — always pick a different topic each time
@@ -124,13 +130,9 @@ STRICT RULES:
 - Make the player think hard — do not make the correct answer obvious
 
 WORLD-SPECIFIC TOPICS (ONLY use topics for the assigned world):
-
-SECURITY WORLD topics: social engineering, insider threats, physical security breaches, shoulder surfing, USB drop attacks, tailgating, dumpster diving, vishing calls, deepfake impersonation, SIM swapping, business email compromise, rogue devices, badge cloning, clean desk policy violations, pretexting, whaling attacks, quid pro quo attacks
-
+SECURITY WORLD topics: social engineering, insider threats, physical security breaches, shoulder surfing, USB drop attacks, tailgating, dumpster diving, vishing calls, deepfake impersonation, SIM swapping, business email compromise, rogue devices, badge cloning, clean desk policy violations, pretexting, whaling attacks, quid op quo attacks
 CLOUD WORLD topics: S3 bucket misconfigurations, IAM privilege escalation, cloud storage exposure, serverless function vulnerabilities, container escape, Kubernetes misconfiguration, cloud API key exposure, shadow IT in cloud, cross-account attacks, cloud logging gaps, misconfigured CDN, public snapshots, insecure cloud functions, cloud metadata service abuse, overpermissioned service accounts
-
 LOGIC WORLD topics: SQL injection variants, IDOR vulnerabilities, XSS attacks, CSRF, XXE injection, SSRF, buffer overflow, race conditions, broken authentication, JWT vulnerabilities, API rate limiting bypass, GraphQL introspection attacks, deserialization flaws, path traversal, open redirect, prototype pollution, HTTP request smuggling
-
 INCIDENT RESPONSE topics: ransomware containment, data exfiltration detection, brute force response, DDoS mitigation, supply chain compromise, lateral movement detection, zero-day response, cryptojacking detection, DNS poisoning response, man-in-the-middle detection, log tampering, memory forensics, network segmentation during attack, threat hunting, forensic evidence preservation
 
 DIFFICULTY SCALING:
@@ -156,13 +158,20 @@ Return ONLY valid JSON, no extra text, no markdown:
         max_tokens: 700
       })
     });
+    
     const data = await response.json();
-    const text = data.choices[0].message.content;
-    const clean = text.replace(/```json|```/g, '').trim();
-    const mission = JSON.parse(clean);
+    let text = data.choices[0].message.content.trim();
+    
+    // Smart cleaning: cleans up markdown wrappers only if the AI accidentally added them
+    if (text.startsWith("```")) {
+      text = text.replace(/^```json|```$/g, "").trim();
+    }
+    
+    const mission = JSON.parse(text);
     res.json(mission);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to generate mission' });
+    console.error("Mission Generation Crash Log:", err);
+    res.status(500).json({ error: 'Failed to generate mission code structural error' });
   }
 });
 
