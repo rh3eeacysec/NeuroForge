@@ -252,40 +252,56 @@
   document.getElementById("threat-level").textContent = difficulty;
   updateXPBar();
 
-  fetch("https://neuroforge-backend-h4yh.onrender.com/api/generate-mission", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ world: world, level: level, difficulty: difficulty })
-  })
-  .then(r => r.json())
-  .then(function(mission) {
-    currentMission = mission;
-    document.getElementById("mission-title").textContent = mission.title;
-    document.getElementById("mission-scenario").textContent = mission.scenario;
-    document.getElementById("mission-objective").textContent = mission.objective;
-    document.getElementById("mission-url").textContent = mission.url;
+  // Integrated Retry Engine to absorb Render container wake-up spikes
+  function fetchMissionWithRetry(retriesLeft, delay) {
+    fetch("https://neuroforge-backend-h4yh.onrender.com/api/generate-mission", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ world: world, level: level, difficulty: difficulty })
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error("Server Status: " + r.status);
+      return r.json();
+    })
+    .then(function(mission) {
+      currentMission = mission;
+      document.getElementById("mission-title").textContent = mission.title;
+      document.getElementById("mission-scenario").textContent = mission.scenario;
+      document.getElementById("mission-objective").textContent = mission.objective;
+      document.getElementById("mission-url").textContent = mission.url;
 
-    var choicesContainer = document.getElementById("choices-container");
-    choicesContainer.innerHTML = "";
-    mission.choices.forEach(function(choice) {
-      var btn = document.createElement("button");
-      btn.className = "w-full py-3 bg-primary/10 text-primary border border-primary/30 font-label-caps text-label-caps rounded hover:bg-primary/20 hover:border-primary transition-all active:scale-95 text-left px-4";
-      btn.textContent = choice.text;
-      btn.addEventListener("click", function() { answer(choice, btn); });
-      choicesContainer.appendChild(btn);
-    });
+      var choicesContainer = document.getElementById("choices-container");
+      choicesContainer.innerHTML = "";
+      mission.choices.forEach(function(choice) {
+        var btn = document.createElement("button");
+        btn.className = "w-full py-3 bg-primary/10 text-primary border border-primary/30 font-label-caps text-label-caps rounded hover:bg-primary/20 hover:border-primary transition-all active:scale-95 text-left px-4";
+        btn.textContent = choice.text;
+        btn.addEventListener("click", function() { answer(choice, btn); });
+        choicesContainer.appendChild(btn);
+      });
 
-    hintTimer = setTimeout(function() {
-      if (!answered) {
-        addToTerminal("AGENT", "You seem to be taking a while... Think about what makes this situation suspicious. Look carefully at the details!", "text-primary/80");
+      hintTimer = setTimeout(function() {
+        if (!answered) {
+          addToTerminal("AGENT", "You seem to be taking a while... Think about what makes this situation suspicious. Look carefully at the details!", "text-primary/80");
+        }
+      }, 30000);
+    })
+    .catch(function(err) {
+      if (retriesLeft > 0) {
+        addToTerminal("SYSTEM", "Container spinning up (Cold Start)... Retrying connection. Remainder: " + retriesLeft, "text-error/60");
+        setTimeout(function() {
+          fetchMissionWithRetry(retriesLeft - 1, delay * 1.5);
+        }, delay);
+      } else {
+        document.getElementById("mission-title").textContent = "MISSION LOAD ERROR";
+        document.getElementById("mission-scenario").textContent = "Could not wake backend cloud server. Please check your browser connection or wait 30 seconds and refresh!";
+        document.getElementById("mission-objective").textContent = "Error loading mission architecture.";
       }
-    }, 30000);
-  })
-  .catch(function() {
-    document.getElementById("mission-title").textContent = "MISSION LOAD ERROR";
-    document.getElementById("mission-scenario").textContent = "Could not generate mission. Please refresh!";
-    document.getElementById("mission-objective").textContent = "Error loading mission.";
-  });
+    });
+  }
+
+  // Fire deployment request array with 3 maximum structural fallbacks
+  fetchMissionWithRetry(3, 4000);
 
   function answer(choice, btn) {
     if (answered) return;
@@ -320,7 +336,7 @@
 
       addToTerminal("AGENT", "Excellent decision, " + player + "! " + choice.feedback, "text-secondary/80");
 
-    fetch("https://neuroforge-backend-h4yh.onrender.com/api/score", {
+      fetch("https://neuroforge-backend-h4yh.onrender.com/api/score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -350,7 +366,7 @@
       return;
     }
     addToTerminal("AGENT", "Analyzing mission... requesting hint...", "text-primary/60");
-   fetch("https://neuroforge-backend-h4yh.onrender.com/api/hint", {
+    fetch("https://neuroforge-backend-h4yh.onrender.com/api/hint", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ scenario: currentMission.scenario })
