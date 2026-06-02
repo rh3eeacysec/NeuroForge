@@ -252,7 +252,7 @@
   document.getElementById("threat-level").textContent = difficulty;
   updateXPBar();
 
-  fetch("http://localhost:3000/api/generate-mission", {
+  fetch("https://neuroforge-backend-h4yh.onrender.com/api/generate-mission", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ world: world, level: level, difficulty: difficulty })
@@ -320,7 +320,7 @@
 
       addToTerminal("AGENT", "Excellent decision, " + player + "! " + choice.feedback, "text-secondary/80");
 
-      fetch("http://localhost:3000/api/score", {
+    fetch("https://neuroforge-backend-h4yh.onrender.com/api/score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -350,7 +350,7 @@
       return;
     }
     addToTerminal("AGENT", "Analyzing mission... requesting hint...", "text-primary/60");
-    fetch("http://localhost:3000/api/hint", {
+   fetch("https://neuroforge-backend-h4yh.onrender.com/api/hint", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ scenario: currentMission.scenario })
