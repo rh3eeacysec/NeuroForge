@@ -139,34 +139,39 @@
 
   <script>
     function startGame() {
-      var existingPlayer = localStorage.getItem("player");
-if (existingPlayer && existingPlayer !== name) {
-  localStorage.removeItem("xp");
-  localStorage.removeItem("security_completed");
-  localStorage.removeItem("cloud_completed");
-  localStorage.removeItem("logic_completed");
-  localStorage.removeItem("incident_completed");
-}
-      var name = document.getElementById("name").value;
-      if (name === "") return;
+  // 1. Grab the input value first
+  var name = document.getElementById("name").value.trim();
+  if (name === "") return;
 
-      localStorage.setItem("player", name);
+  // 2. Check if a different player is logging in
+  var existingPlayer = localStorage.getItem("player");
+  if (existingPlayer && existingPlayer.toLowerCase() !== name.toLowerCase()) {
+    localStorage.removeItem("xp");
+    localStorage.removeItem("security_completed");
+    localStorage.removeItem("cloud_completed");
+    localStorage.removeItem("logic_completed");
+    localStorage.removeItem("incident_completed");
+    localStorage.removeItem("playerID"); // Also clear old ID if switching accounts
+  }
 
-      var existingID = document.getElementById("existing-id").value.trim();
-      if (existingID && existingID.startsWith("NF-")) {
-        localStorage.setItem("playerID", existingID);
-      } else {
-        var currentID = localStorage.getItem("playerID");
-        if (!currentID) {
-          var id = "NF-" + Math.floor(10000 + Math.random() * 90000);
-          localStorage.setItem("playerID", id);
-        }
-      }
+  // 3. Save the new session data
+  localStorage.setItem("player", name);
 
-      window.location.href = "character-select.html";
+  var existingID = document.getElementById("existing-id").value.trim();
+  if (existingID && existingID.startsWith("NF-")) {
+    localStorage.setItem("playerID", existingID);
+  } else {
+    var currentID = localStorage.getItem("playerID");
+    if (!currentID) {
+      var id = "NF-" + Math.floor(10000 + Math.random() * 90000);
+      localStorage.setItem("playerID", id);
     }
+  }
+
+  window.location.href = "character-select.html";
+}
   </script>
-<div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); font-family:monospace; font-size:11px; color:rgba(168,85,247,0.5); letter-spacing:3px; z-index:10;">
+<div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); font-family:monospace; font-size:18px; color:rgba(163, 75, 246, 0.5); letter-spacing:3px; z-index:10;">
   FORGED FOR MICROSOFT AGENTS LEAGUE 2026
 </div>
 </body>
