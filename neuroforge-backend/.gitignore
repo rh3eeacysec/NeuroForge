@@ -1,0 +1,5 @@
+.env
+node_modules
+leaderboard.html
+
+GROQ_API_KEY=gsk
