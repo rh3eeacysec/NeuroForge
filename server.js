@@ -108,21 +108,51 @@ app.post('/api/generate-mission', async (req, res) => {
       body: JSON.stringify({
         messages: [{
           role: 'user',
-          content: `Generate a cybersecurity training mission for a ${difficulty} level ${world} scenario. Return ONLY valid JSON in this exact format with no extra text:
-          {
-            "title": "MISSION TITLE IN CAPS",
-            "url": "HTTPS://CORP.INTERNAL/SOMETHING",
-            "objective": "One line objective",
-            "scenario": "2-3 sentence scenario description",
-            "choices": [
-              {"text": "Choice 1", "correct": false, "feedback": "Explanation"},
-              {"text": "Choice 2", "correct": true, "feedback": "Explanation"},
-              {"text": "Choice 3", "correct": false, "feedback": "Explanation"},
-              {"text": "Choice 4", "correct": false, "feedback": "Explanation"}
-            ]
-          }`
+          content: `You are a cybersecurity training mission generator for NeuroForge.
+
+WORLD: ${world}
+LEVEL: ${level}
+DIFFICULTY: ${difficulty}
+
+STRICT RULES:
+- Generate ONLY topics specific to the ${world} world (see below)
+- As level increases make scenarios MORE complex, twisted and harder to identify
+- At high levels add red herrings, misleading details, and make wrong answers tempting
+- NEVER generate the same scenario twice — always pick a different topic each time
+- Every scenario must feel unique, realistic and surprising
+- Make the player think hard — do not make the correct answer obvious
+
+WORLD-SPECIFIC TOPICS (ONLY use topics for the assigned world):
+
+SECURITY WORLD topics: social engineering, insider threats, physical security breaches, shoulder surfing, USB drop attacks, tailgating, dumpster diving, vishing calls, deepfake impersonation, SIM swapping, business email compromise, rogue devices, badge cloning, clean desk policy violations, pretexting, whaling attacks, quid pro quo attacks
+
+CLOUD WORLD topics: S3 bucket misconfigurations, IAM privilege escalation, cloud storage exposure, serverless function vulnerabilities, container escape, Kubernetes misconfiguration, cloud API key exposure, shadow IT in cloud, cross-account attacks, cloud logging gaps, misconfigured CDN, public snapshots, insecure cloud functions, cloud metadata service abuse, overpermissioned service accounts
+
+LOGIC WORLD topics: SQL injection variants, IDOR vulnerabilities, XSS attacks, CSRF, XXE injection, SSRF, buffer overflow, race conditions, broken authentication, JWT vulnerabilities, API rate limiting bypass, GraphQL introspection attacks, deserialization flaws, path traversal, open redirect, prototype pollution, HTTP request smuggling
+
+INCIDENT RESPONSE topics: ransomware containment, data exfiltration detection, brute force response, DDoS mitigation, supply chain compromise, lateral movement detection, zero-day response, cryptojacking detection, DNS poisoning response, man-in-the-middle detection, log tampering, memory forensics, network segmentation during attack, threat hunting, forensic evidence preservation
+
+DIFFICULTY SCALING:
+- EASY (levels 1-10): Clear scenario, obvious red flags, straightforward correct answer, no red herrings
+- MEDIUM (levels 11-25): Subtle clues, requires domain knowledge, one tempting wrong answer, some ambiguity
+- HARD (levels 26-40): Complex multi-step scenario with red herrings, multiple plausible answers, requires expert thinking, misleading context
+- EXTREME (levels 41-50): Highly sophisticated attack chain, very misleading context, wrong answers sound extremely convincing, requires deep expertise, even security professionals would second-guess themselves
+
+Return ONLY valid JSON, no extra text, no markdown:
+{
+  "title": "MISSION TITLE IN CAPS",
+  "url": "HTTPS://CORP.INTERNAL/RELEVANT-PATH",
+  "objective": "One precise objective line",
+  "scenario": "2-3 sentences — realistic, detailed, world-specific scenario with enough detail to make it genuinely challenging",
+  "choices": [
+    {"text": "Choice 1", "correct": false, "feedback": "Detailed explanation of why this is wrong"},
+    {"text": "Choice 2", "correct": true, "feedback": "Detailed explanation of why this is correct"},
+    {"text": "Choice 3", "correct": false, "feedback": "Detailed explanation of why this is wrong"},
+    {"text": "Choice 4", "correct": false, "feedback": "Detailed explanation of why this is wrong"}
+  ]
+}`
         }],
-        max_tokens: 500
+        max_tokens: 700
       })
     });
     const data = await response.json();
