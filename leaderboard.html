@@ -123,6 +123,7 @@
   </div>
 
 <script>
+  
   var currentPlayer = localStorage.getItem("player");
   var currentID = localStorage.getItem("playerID");
 
@@ -130,34 +131,56 @@
   if (currentPlayer) logo.textContent = "NEUROFORGE — " + currentPlayer.toUpperCase();
 
   function getBadge(xp) {
-    if (xp >= 15000) return "🔴 Cyber Commander";
-    if (xp >= 10000) return "🟠 Threat Analyst";
-    if (xp >= 5000) return "🟡 Security Agent";
-    if (xp >= 2000) return "🟢 Firewall Guard";
-    if (xp >= 1000) return "🔵 Phishing Hunter";
-    if (xp >= 500) return "🟣 Incident Responder";
-    return "⚪ Recruit";
+    if (xp >= 57000) return "💀 NEUROFORGE LEGEND";
+    if (xp >= 40000) return "🔴 Cyber Commander";
+    if (xp >= 25000) return "🟠 Threat Analyst";
+    if (xp >= 14250) return "🟡 World Master";
+    if (xp >= 8000)  return "🟢 Security Agent";
+    if (xp >= 4000)  return "🔵 Firewall Guard";
+    if (xp >= 2000)  return "🟣 Phishing Hunter";
+    if (xp >= 1000)  return "⚪ Incident Responder";
+    return "🩶 Recruit";
   }
 
- fetch("https://neuroforge-backend-h4yh.onrender.com/api/leaderboard")
-    .then(r => r.json())
-    .then(function(players) {
+  var fakePlayers = [
+    { name: "GH0ST_PR0T0C0L", unique_id: "NF-00001", total_xp: 54200 },
+    { name: "CIPHER_X",       unique_id: "NF-00002", total_xp: 48700 },
+    { name: "NULL_BYTE",      unique_id: "NF-00003", total_xp: 41300 },
+    { name: "PHANTOM",        unique_id: "NF-00004", total_xp: 36900 },
+    { name: "VORTEX",         unique_id: "NF-00005", total_xp: 29500 },
+    { name: "NOVA_SEC",       unique_id: "NF-00006", total_xp: 22100 },
+    { name: "BLAZE",          unique_id: "NF-00007", total_xp: 16800 },
+    { name: "SHADOW_OPS",     unique_id: "NF-00008", total_xp: 11400 },
+    { name: "NEXUS",          unique_id: "NF-00009", total_xp: 7200  },
+    { name: "RECRUT_404",     unique_id: "NF-00010", total_xp: 3100  },
+  ];
 
-      players.forEach(function(p) {
-        if (p.unique_id === currentID) p.isYou = true;
+  fetch("https://neuroforge-backend-h4yh.onrender.com/api/leaderboard")
+    .then(r => r.json())
+    .then(function(realPlayers) {
+      // merge real + fake, remove duplicates by unique_id, sort, top 15
+      var merged = fakePlayers.concat(realPlayers);
+      var seen = {};
+      merged = merged.filter(function(p) {
+        if (seen[p.unique_id]) return false;
+        seen[p.unique_id] = true;
+        return true;
       });
+      merged.sort(function(a, b) { return b.total_xp - a.total_xp; });
+      var top = merged.slice(0, 15);
 
       var ranks = ["🥇", "🥈", "🥉"];
       var tbody = document.getElementById("leaderboard-body");
       tbody.innerHTML = "";
 
-      players.forEach(function(p, i) {
+      top.forEach(function(p, i) {
+        var isYou = p.unique_id === currentID;
         var row = document.createElement("tr");
-        if (p.isYou) row.className = "you-row";
+        if (isYou) row.className = "you-row";
         row.innerHTML = `
           <td class="rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i < 3 ? ranks[i] : "#" + (i+1)}</td>
           <td>
-            <div class="player-name">${p.name}${p.isYou ? '<span class="you-tag">YOU</span>' : ''}</div>
+            <div class="player-name">${p.name}${isYou ? '<span class="you-tag">YOU</span>' : ''}</div>
             <div class="player-id">${p.unique_id}</div>
           </td>
           <td class="xp">${Number(p.total_xp).toLocaleString()} XP</td>
@@ -167,12 +190,25 @@
       });
     })
     .catch(function() {
-      document.getElementById("leaderboard-body").innerHTML = `
-        <tr><td colspan="4" style="text-align:center; color:rgba(255,255,255,0.3); padding:40px;">
-          Could not connect to server. Make sure Node.js is running!
-        </td></tr>
-      `;
+      // if backend is down, still show fake players
+      var ranks = ["🥇", "🥈", "🥉"];
+      var tbody = document.getElementById("leaderboard-body");
+      tbody.innerHTML = "";
+      fakePlayers.forEach(function(p, i) {
+        var row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i < 3 ? ranks[i] : "#" + (i+1)}</td>
+          <td>
+            <div class="player-name">${p.name}</div>
+            <div class="player-id">${p.unique_id}</div>
+          </td>
+          <td class="xp">${Number(p.total_xp).toLocaleString()} XP</td>
+          <td><span class="badge">${getBadge(Number(p.total_xp))}</span></td>
+        `;
+        tbody.appendChild(row);
+      });
     });
+
 </script>
 </body>
 </html>
