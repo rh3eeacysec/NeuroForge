@@ -185,7 +185,7 @@
   localStorage.setItem("agentImg", a.img);
 
   // Save to database!
-  fetch("http://localhost:3000/api/user", {
+  fetch("https://neuroforge-backend-h4yh.onrender.com/api/user", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
