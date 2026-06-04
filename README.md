@@ -222,7 +222,7 @@ This project adopts the [Microsoft Open Source Code of Conduct](https://opensour
 
 ## 👩‍💻 About the Creator
 
-Hi, I'm **Rhea Prajapati** — a 19 yr old cybersecurity and cloud security student who builds projects at the intersection of security, AI, and modern web technologies.
+Hi, I'm **Rhea Prajapati** - cybersecurity and cloud security student who builds projects at the intersection of security, AI, and modern web technologies.
 
 I'm currently focused on application security, cloud security, API security, ethical hacking, and AI-powered security solutions. I believe the best way to learn cybersecurity is through hands-on experience — which is exactly why NeuroForge exists. Complex security concepts shouldn't live in textbooks. They should be lived through decisions, consequences, and pressure.
 
