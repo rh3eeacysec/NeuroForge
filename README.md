@@ -190,10 +190,10 @@ GitHub Copilot was used extensively throughout the entire build of NeuroForge:
 |-----------|--------|------------------------|
 | **Accuracy & Relevance** | 20% | Fully meets Creative Apps requirements. Foundry IQ deeply integrated as the core mission and hint engine. GitHub Copilot used throughout. MCP server exposes NeuroForge inside VS Code. |
 | **Reasoning & Multi-step Thinking** | 20% | AI prompt chain: world → level → difficulty → topic enforcement → scenario generation → choice generation → feedback generation. Hint system adds a second reasoning layer per mission. |
-| **Creativity & Originality** | 15% | First-of-its-kind gamified cybersecurity platform with AI-generated missions. Cyberpunk aesthetic, agent identity system, and MCP integration make it genuinely novel. |
+| **Creativity & Originality** | 15% | A novel gamified cybersecurity platform with AI-generated missions. Cyberpunk aesthetic, agent identity system, and MCP integration make it genuinely novel. |
 | **User Experience & Presentation** | 15% | Full cyberpunk UI with hologram panels, scanlines, agent terminal feed, XP bar, progress rings. Deployed live. Playable by judges immediately. |
 | **Reliability & Safety** | 20% | No credentials in repo. Retry engine handles Render cold starts. UptimeRobot keeps backend alive 24/7. Azure trial covers full competition period. |
-| **Community Vote** | 10% | Shareable concept — "play a cybersecurity game" is immediately compelling to developers. |
+| **Community Vote** | 10% | Shareable concept — "play a cybersecurity game powered by AI" is immediately compelling to developers. |
 
 ---
 
