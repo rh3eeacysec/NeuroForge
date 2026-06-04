@@ -193,7 +193,7 @@ GitHub Copilot was used extensively throughout the entire build of NeuroForge:
 | **Creativity & Originality** | 15% | First-of-its-kind gamified cybersecurity platform with AI-generated missions. Cyberpunk aesthetic, agent identity system, and MCP integration make it genuinely novel. |
 | **User Experience & Presentation** | 15% | Full cyberpunk UI with hologram panels, scanlines, agent terminal feed, XP bar, progress rings. Deployed live. Playable by judges immediately. |
 | **Reliability & Safety** | 20% | No credentials in repo. Retry engine handles Render cold starts. UptimeRobot keeps backend alive 24/7. Azure trial covers full competition period. |
-| **Community Vote** | 10% | Shareable concept — "play a cybersecurity game powered by AI" is immediately compelling to developers. |
+| **Community Vote** | 10% | Shareable concept — "play a cybersecurity game" is immediately compelling to developers. |
 
 ---
 
