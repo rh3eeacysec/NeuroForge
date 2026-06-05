@@ -1,3 +1,94 @@
+# NeuroForge 🧠⚡
+### Forge Your Mind. Defend The Future.
+
+[![Agents League 2026](https://img.shields.io/badge/Microsoft-Agents%20League%202026-blue?style=for-the-badge&logo=microsoft)](https://aka.ms/agentsleague/aisf)
+[![Track](https://img.shields.io/badge/Track-Creative%20Apps-purple?style=for-the-badge)](https://aka.ms/agentsleague/aisf)
+[![Foundry IQ](https://img.shields.io/badge/Powered%20by-Microsoft%20Foundry%20IQ-cyan?style=for-the-badge&logo=microsoft)](https://learn.microsoft.com/azure/foundry/agents/concepts/what-is-foundry-iq)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge)](https://rh3eeacysec.github.io/NeuroForge)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+
+---
+
+> *Cybersecurity isn't learned by reading slides. It's learned by making decisions under pressure.*
+
+**NeuroForge** is a gamified cybersecurity simulation platform where players make real-world security decisions across **200 AI-generated missions** spanning four cyber worlds. Every mission is born live — powered by **Microsoft Foundry IQ (Azure OpenAI gpt-35-turbo)** — so no two sessions are ever the same. Built for Microsoft Agents League 2026.
+
+---
+
+## 🎬 Demo
+
+[![Watch Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/XKH8iI1CWvY?si=EjRyBolkLfiCLEaf)
+
+🔗 **Live Platform:** [rh3eeacysec.github.io/NeuroForge](https://rh3eeacysec.github.io/NeuroForge)
+
+---
+
+## 🌍 The Four Worlds
+
+Each world is a distinct cybersecurity domain. Fifty levels each. Progressive difficulty scaling from EASY to EXTREME.
+
+| World | Domain | Threat Focus |
+|-------|--------|-------------|
+| 🔐 **Security World** | Human Attack Surface | Social engineering, SIM swapping, deepfake impersonation, insider threats, phishing |
+| ☁️ **Cloud World** | Cloud Infrastructure | S3 misconfigurations, IAM privilege escalation, exposed API keys, container escapes |
+| ⚡ **Logic World** | Technical Vulnerabilities | SQL injection, XSS, IDOR, JWT vulnerabilities, broken authentication, SSRF |
+| 🔥 **Incident Response** | Live Attack Scenarios | Ransomware containment, lateral movement detection, DDoS mitigation, forensics |
+
+---
+
+## ✨ Core Features
+
+### 🤖 AI-Powered Mission Generation — Microsoft Foundry IQ
+Every mission is dynamically generated the moment a player enters. The backend fires a precision prompt to **Microsoft Foundry IQ (Azure OpenAI gpt-35-turbo)** specifying world, level, and difficulty. The AI returns a fully structured mission — realistic corporate scenario, fake internal URL, clear objective, and four choices with detailed feedback for each.
+
+- **Zero repetition** — world-specific topic enforcement prevents duplicate scenarios
+- **Difficulty scaling** — EASY missions have clear red flags; EXTREME missions (levels 41-50) include deliberate red herrings and convincing wrong answers designed to challenge even experienced security professionals
+- **Live feedback** — wrong answers explain the blast radius — what that decision would cost a real organization
+
+### 💡 Socratic Hint System
+Stuck on a mission? One click fires a live request to **Microsoft Foundry IQ** which returns a Socratic hint — a nudge that redirects thinking without giving away the answer. Appears live in the Agent Terminal styled as a real cybersecurity operations feed. An auto-hint fires after 30 seconds of inactivity so no player gets left behind.
+
+### 🏆 Live Leaderboard & XP System
+Every correct answer pushes XP to MySQL via the backend. The leaderboard runs a nested SQL query — MAX XP per world per player, then SUM across all four worlds — preventing replay farming.
+
+| Badge | XP Required |
+|-------|------------|
+| 🩶 Recruit | 0+ |
+| 🟣 Incident Responder | 500+ |
+| 🔵 Phishing Hunter | 1,000+ |
+| 🟢 Firewall Guard | 2,000+ |
+| 🟡 Security Agent | 5,000+ |
+| 🟠 Threat Analyst | 10,000+ |
+| 🔴 Cyber Commander | 25,000+ |
+| 💀 NeuroForge Legend | 57,000 (All 200 missions) |
+
+### 🤖 MCP Server — GitHub Copilot Integration
+NeuroForge ships with a **Model Context Protocol server** that exposes the game as a live tool provider inside **GitHub Copilot in VS Code.** Developers access cybersecurity training without leaving their editor.
+
+| Tool | Description |
+|------|-------------|
+| `get_mission` | Generate a live AI mission by world and difficulty inside Copilot Chat |
+| `get_hint` | Get a Socratic hint for any cybersecurity scenario |
+| `get_leaderboard` | Fetch the live top 10 leaderboard as a markdown table |
+
+---
+
+## 🏗️ Architecture
+
+![NeuroForge Architecture](architecture-diagram.jpeg)
+
+Player (Browser)
+↓
+Frontend — GitHub Pages (HTML/CSS/JS)
+↓
+Backend API — Render (Node.js Express)
+↓              ↓                    ↓
+MySQL DB        Microsoft              MCP Server
+(Aiven)       Foundry IQ              (Port 3001)
+Azure OpenAI                  ↓
+gpt-35-turbo            GitHub Copilot
+VS Code Agent
+
 ### Tech Stack
 
 | Layer | Technology |
@@ -117,7 +208,7 @@ Please do not report security vulnerabilities through public GitHub issues. See 
 
 ## 👩‍💻 About the Creator
 
-Hi, I'm **Rhea Prajapati** — a cybersecurity and cloud security student who builds projects at the intersection of security, AI, and modern web technologies.
+Hi, I'm **Rhea Prajapati** — a cybersecurity and cloud security enthusiast who builds projects at the intersection of security, AI, and modern web technologies.
 
 I'm currently focused on application security, cloud security, API security, ethical hacking, and AI-powered security solutions. I believe the best way to learn cybersecurity is through hands-on experience — which is exactly why NeuroForge exists. Complex security concepts shouldn't live in textbooks. They should be lived through decisions, consequences, and pressure.
 
