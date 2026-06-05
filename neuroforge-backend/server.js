@@ -8,7 +8,7 @@ const app = express();
 
 // Updated CORS to explicitly support your live Netlify site smoothly
 app.use(cors({
-  origin: 'https://neuroforge-rhea.netlify.app',
+ origin: ['https://neuroforge-rhea.netlify.app', 'https://rh3eeacysec.github.io'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
