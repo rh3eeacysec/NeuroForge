@@ -1,7 +1,7 @@
 # NeuroForge 🧠⚡
 ### Forge Your Mind. Defend The Future.
 
-[![Agents League 2026](https://img.shields.io/badge/Microsoft-Agents%20League%202026-blue?style=for-the-badge&logo=microsoft)](https://aka.ms/agentsleague/aisf)
+[![Agents League 2026](https://img.shields.io/badge/Microsoft-Agents%20League%20Hackathon%202026-blue?style=for-the-badge&logo=microsoft)](https://aka.ms/agentsleague/aisf)
 [![Track](https://img.shields.io/badge/Track-Creative%20Apps-purple?style=for-the-badge)](https://aka.ms/agentsleague/aisf)
 [![Foundry IQ](https://img.shields.io/badge/Powered%20by-Microsoft%20Foundry%20IQ-cyan?style=for-the-badge&logo=microsoft)](https://learn.microsoft.com/azure/foundry/agents/concepts/what-is-foundry-iq)
 [![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge)](https://rh3eeacysec.github.io/NeuroForge)
@@ -208,7 +208,7 @@ Please do not report security vulnerabilities through public GitHub issues. See 
 
 ## 👩‍💻 About the Creator
 
-Hi, I'm **Rhea Prajapati** — a cybersecurity and cloud security enthusiast who builds projects at the intersection of security, AI, and modern web technologies.
+Hi, I'm **Rhea Prajapati** — a cybersecurity and digital forensics student who builds at the intersection of security, AI, and modern web technologies.
 
 I'm currently focused on application security, cloud security, API security, ethical hacking, and AI-powered security solutions. I believe the best way to learn cybersecurity is through hands-on experience — which is exactly why NeuroForge exists. Complex security concepts shouldn't live in textbooks. They should be lived through decisions, consequences, and pressure.
 
