@@ -17,10 +17,9 @@
 
 ## 🎬 Demo
 
-[![Watch Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/XKH8iI1CWvY?si=EjRyBolkLfiCLEaf)
+[![Watch Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/bbBCNoikGEA?si=pmOrTLuMxZ42T2xk)
 
-🔗 **Live Platform:** [rh3eeacysec.github.io/NeuroForge](https://rh3eeacysec.github.io/NeuroForge)
-
+[![Launch Platform](https://img.shields.io/badge/Live_Platform-Launch_App-blue?style=for-the-badge&logo=github&logoColor=white)](https://rh3eeacysec.github.io/NeuroForge)
 ---
 
 ## 🌍 The Four Worlds
