@@ -8,7 +8,7 @@ const app = express();
 
 // Updated CORS to explicitly support your live Netlify site smoothly
 app.use(cors({
- origin: ['https://neuroforge-rhea.netlify.app', 'https://rh3eeacysec.github.io'],
+  origin: ['https://neuroforge-rhea.netlify.app', 'https://rh3eeacysec.github.io'],
   methods: ['GET', 'POST'],
   credentials: true
 }));
@@ -30,8 +30,23 @@ db.connect((err) => {
   }
 });
 
+// UPGRADED KEEP-ALIVE ROUTE: Keeps Render AND Aiven awake simultaneously
 app.get('/', (req, res) => {
-  res.json({ message: 'NeuroForge API is running!' });
+  db.query('SELECT 1', (err) => {
+    if (err) {
+      console.error('Aiven keep-alive query failed:', err.message);
+      return res.json({ 
+        message: 'NeuroForge API is running, but database connection is asleep!', 
+        db_status: 'error' 
+      });
+    }
+    
+    console.log('Aiven MySQL kept awake successfully!');
+    res.json({ 
+      message: 'NeuroForge API and Aiven Cloud Database are both wide awake!',
+      db_status: 'online'
+    });
+  });
 });
 
 app.post('/api/user', (req, res) => {
@@ -158,15 +173,14 @@ Return ONLY valid JSON, no extra text, no markdown:
         max_tokens: 700
       })
     });
-    
+
     const data = await response.json();
     let text = data.choices[0].message.content.trim();
-    
-    // Smart cleaning: cleans up markdown wrappers only if the AI accidentally added them
+
     if (text.startsWith("```")) {
       text = text.replace(/^```json|```$/g, "").trim();
     }
-    
+
     const mission = JSON.parse(text);
     res.json(mission);
   } catch (err) {
@@ -180,3 +194,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
