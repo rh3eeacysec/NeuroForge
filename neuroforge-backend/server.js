@@ -6,7 +6,7 @@ dotenv.config({ path: __dirname + '/.env' });
 
 const app = express();
 
-// Updated CORS to explicitly support your live Netlify site smoothly
+// Updated CORS 
 app.use(cors({
   origin: ['https://neuroforge-rhea.netlify.app', 'https://rh3eeacysec.github.io'],
   methods: ['GET', 'POST'],
@@ -14,23 +14,31 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const db = mysql.createConnection({
+
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306
+  port: process.env.DB_PORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  enableKeepAlive: true, 
+  keepAliveInitialDelay: 10000
 });
 
-db.connect((err) => {
+
+db.getConnection((err, connection) => {
   if (err) {
-    console.log('Database not connected:', err.message);
+    console.log('Database pool connection failed:', err.message);
   } else {
-    console.log('MySQL Connected!');
+    console.log('MySQL Connection Pool successfully established!');
+    connection.release();
   }
 });
 
-// UPGRADED KEEP-ALIVE ROUTE: Keeps Render AND Aiven awake simultaneously
+
 app.get('/', (req, res) => {
   db.query('SELECT 1', (err) => {
     if (err) {
@@ -194,4 +202,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
