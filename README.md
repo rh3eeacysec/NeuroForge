@@ -229,7 +229,3 @@ My academic and practical focus centers on application security (AppSec), cloud 
 * **Core Accelerators:** Powered by Microsoft Foundry IQ and Accelerated via GitHub Copilot
 
 *Two hundred distinct missions. Four isolated worlds. Zero static duplicates. Because threats change in an instant. Forge your mind. Defend the future.*
-
-```
-
-```
