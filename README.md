@@ -224,7 +224,7 @@ My academic and practical focus centers on application security (AppSec), cloud 
 
 * **Author:** Rhea Prajapati
 * **Microsoft Learn Profile:** Rhea-8387
-* **GitHub Code Repository:** @rh3eeacysec
+* **GitHub Code Repository:** https://github.com/rh3eeacysec/NeuroForge
 * **Target Event:** Developed exclusively for the Microsoft Agents League Hackathon 2026 — Creative Apps Challenge Track
 * **Core Accelerators:** Powered by Microsoft Foundry IQ and Accelerated via GitHub Copilot
 
